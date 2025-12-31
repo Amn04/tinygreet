@@ -73,23 +73,32 @@ class FeedForward:
         
         # Activation
         if self.activation == 'gelu':
-            h = h. gelu()
+            h = h.gelu()
         elif self.activation == 'relu':
             h = h.relu()
         else:
-            raise ValueError(f"Unknown activation:  {self.activation}")
+            raise ValueError(f"Unknown activation: {self.activation}")
         
         # Dropout (if training)
         if training and self.dropout_rate > 0:
-            mask = np.random. binomial(
-                1, 1 - self.dropout_rate, h. shape
+            mask = np.random.binomial(
+                1, 1 - self.dropout_rate, h.shape
             ).astype(np.float32)
+            h_pre_dropout = h
+            scale = 1 - self.dropout_rate
             h = Tensor(
-                h.data * mask / (1 - self.dropout_rate),
+                h.data * mask / scale,
                 requires_grad=h.requires_grad,
-                _children=(h,),
+                _children=(h_pre_dropout,),
                 _op='dropout'
             )
+            # Define backward for dropout
+            def _backward_dropout():
+                if h_pre_dropout.requires_grad:
+                    if h_pre_dropout.grad is None:
+                        h_pre_dropout.grad = np.zeros_like(h_pre_dropout.data)
+                    h_pre_dropout.grad += h.grad * mask / scale
+            h._backward = _backward_dropout
         
         # Second linear layer
         out = self.fc2(h)

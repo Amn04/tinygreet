@@ -48,7 +48,7 @@ class Linear:
         # This helps with gradient flow at the start of training
         scale = np.sqrt(2.0 / (in_features + out_features))
         self.weight = Tensor(
-            np.random. randn(in_features, out_features) * scale,
+            np.random.randn(in_features, out_features) * scale,
             requires_grad=True
         )
         
@@ -71,18 +71,18 @@ class Linear:
             Output tensor of shape (..., out_features)
         """
         # Matrix multiplication
-        out = x @ self. weight
+        out = x @ self.weight
         
         # Add bias if present
-        if self.bias is not None: 
+        if self.bias is not None:
             out = out + self.bias
         
         return out
     
-    def parameters(self) -> List[Tensor]: 
+    def parameters(self) -> List[Tensor]:
         """Return list of learnable parameters."""
-        if self.bias is not None: 
-            return [self. weight, self.bias]
+        if self.bias is not None:
+            return [self.weight, self.bias]
         return [self.weight]
     
     def __repr__(self):
@@ -105,7 +105,7 @@ def create_causal_mask(seq_len: int) -> np.ndarray:
     """
     # Create upper triangular matrix of -inf (above diagonal)
     mask = np.triu(np.ones((seq_len, seq_len)) * float('-inf'), k=1)
-    return mask. astype(np.float32)
+    return mask.astype(np.float32)
 
 
 class ScaledDotProductAttention:
@@ -157,7 +157,7 @@ class ScaledDotProductAttention:
         # Step 1: Compute attention scores
         # Q @ K.T -> (seq_len, seq_len)
         # We need to transpose the last two dimensions of K
-        key_t = key. transpose(*range(len(key. shape) - 2), -1, -2)
+        key_t = key.transpose(*range(len(key.shape) - 2), -1, -2)
         scores = query @ key_t  # (..., seq_len, seq_len)
         
         # Step 2: Scale by sqrt(d_k)
@@ -174,9 +174,9 @@ class ScaledDotProductAttention:
             )
             
             # Backward for masking (gradient flows through unchanged)
-            old_scores = scores._prev. copy()
+            old_scores = scores._prev.copy()
             def _backward_mask():
-                for child in old_scores: 
+                for child in old_scores:
                     if child.requires_grad:
                         if child.grad is None:
                             child.grad = np.zeros_like(child.data)
@@ -187,20 +187,29 @@ class ScaledDotProductAttention:
         attention_weights = scores.softmax(axis=-1)
         
         # Store attention weights for visualization
-        self.attention_weights = attention_weights. data. copy()
+        self.attention_weights = attention_weights.data.copy()
         
         # Step 5: Apply dropout (if training)
         if training and self.dropout_rate > 0:
-            dropout_mask = np. random.binomial(
-                1, 1 - self.dropout_rate, 
+            dropout_mask = np.random.binomial(
+                1, 1 - self.dropout_rate,
                 attention_weights.shape
             ).astype(np.float32)
+            attn_pre_dropout = attention_weights
+            scale = 1 - self.dropout_rate
             attention_weights = Tensor(
-                attention_weights.data * dropout_mask / (1 - self.dropout_rate),
-                requires_grad=attention_weights. requires_grad,
-                _children=(attention_weights,),
+                attention_weights.data * dropout_mask / scale,
+                requires_grad=attention_weights.requires_grad,
+                _children=(attn_pre_dropout,),
                 _op='dropout'
             )
+            # Define backward for dropout
+            def _backward_dropout():
+                if attn_pre_dropout.requires_grad:
+                    if attn_pre_dropout.grad is None:
+                        attn_pre_dropout.grad = np.zeros_like(attn_pre_dropout.data)
+                    attn_pre_dropout.grad += attention_weights.grad * dropout_mask / scale
+            attention_weights._backward = _backward_dropout
         
         # Step 6: Apply attention weights to values
         output = attention_weights @ value  # (..., seq_len, d_v)
@@ -244,7 +253,7 @@ class MultiHeadAttention:
             f"embed_dim ({embed_dim}) must be divisible by num_heads ({num_heads})"
         
         self.embed_dim = embed_dim
-        self. num_heads = num_heads
+        self.num_heads = num_heads
         self.head_dim = embed_dim // num_heads  # d_k = d_v = embed_dim / num_heads
         self.scale = np.sqrt(self.head_dim)
         
@@ -255,7 +264,7 @@ class MultiHeadAttention:
         self.W_v = Linear(embed_dim, embed_dim, bias=bias)
         
         # Output projection
-        self. W_o = Linear(embed_dim, embed_dim, bias=bias)
+        self.W_o = Linear(embed_dim, embed_dim, bias=bias)
         
         # Attention mechanism
         self.attention = ScaledDotProductAttention(dropout_rate)
@@ -263,39 +272,39 @@ class MultiHeadAttention:
         # Store attention weights for visualization
         self.attention_weights:  Optional[np.ndarray] = None
     
-    def _split_heads(self, x: Tensor, batch_size: int) -> Tensor: 
+    def _split_heads(self, x: Tensor, batch_size: int) -> Tensor:
         """
         Split the last dimension into (num_heads, head_dim).
         
         Input shape: (batch_size, seq_len, embed_dim)
         Output shape: (batch_size, num_heads, seq_len, head_dim)
         """
-        seq_len = x. shape[-2] if x.data.ndim > 2 else x.shape[0]
+        seq_len = x.shape[-2] if x.data.ndim > 2 else x.shape[0]
         
         if x.data.ndim == 2:
-            # Single sequence:  (seq_len, embed_dim) -> (1, num_heads, seq_len, head_dim)
-            reshaped = x. reshape(1, seq_len, self. num_heads, self.head_dim)
-        else: 
-            # Batch:  (batch_size, seq_len, embed_dim) -> (batch_size, num_heads, seq_len, head_dim)
+            # Single sequence: (seq_len, embed_dim) -> (1, num_heads, seq_len, head_dim)
+            reshaped = x.reshape(1, seq_len, self.num_heads, self.head_dim)
+        else:
+            # Batch: (batch_size, seq_len, embed_dim) -> (batch_size, num_heads, seq_len, head_dim)
             reshaped = x.reshape(batch_size, seq_len, self.num_heads, self.head_dim)
         
         # Transpose to (batch_size, num_heads, seq_len, head_dim)
         return reshaped.transpose(0, 2, 1, 3)
     
-    def _combine_heads(self, x:  Tensor, batch_size: int) -> Tensor: 
+    def _combine_heads(self, x: Tensor, batch_size: int) -> Tensor:
         """
         Combine heads back into single dimension.
         
         Input shape: (batch_size, num_heads, seq_len, head_dim)
         Output shape: (batch_size, seq_len, embed_dim)
         """
-        # Transpose back:  (batch_size, num_heads, seq_len, head_dim) -> (batch_size, seq_len, num_heads, head_dim)
+        # Transpose back: (batch_size, num_heads, seq_len, head_dim) -> (batch_size, seq_len, num_heads, head_dim)
         x = x.transpose(0, 2, 1, 3)
         
-        seq_len = x. shape[1]
+        seq_len = x.shape[1]
         
-        # Reshape to combine heads:  (batch_size, seq_len, embed_dim)
-        return x.reshape(batch_size, seq_len, self. embed_dim)
+        # Reshape to combine heads: (batch_size, seq_len, embed_dim)
+        return x.reshape(batch_size, seq_len, self.embed_dim)
     
     def __call__(
         self,
@@ -321,18 +330,35 @@ class MultiHeadAttention:
         # Handle single sequence (no batch dimension)
         single_sequence = query.data.ndim == 2
         if single_sequence:
-            # Add batch dimension
-            query = Tensor(query.data[np.newaxis, : , :], requires_grad=query.requires_grad)
-            key = Tensor(key.data[np. newaxis, :, :], requires_grad=key.requires_grad)
-            value = Tensor(value.data[np. newaxis, :, :], requires_grad=value.requires_grad)
+            # Add batch dimension - need to track for gradient flow
+            original_query = query
+            original_key = key
+            original_value = value
+            
+            query = Tensor(query.data[np.newaxis, :, :], requires_grad=query.requires_grad, _children=(original_query,), _op='unsqueeze')
+            key = Tensor(key.data[np.newaxis, :, :], requires_grad=key.requires_grad, _children=(original_key,), _op='unsqueeze')
+            value = Tensor(value.data[np.newaxis, :, :], requires_grad=value.requires_grad, _children=(original_value,), _op='unsqueeze')
+            
+            # Define backward for unsqueeze
+            def make_unsqueeze_backward(orig, expanded):
+                def _backward():
+                    if orig.requires_grad:
+                        if orig.grad is None:
+                            orig.grad = np.zeros_like(orig.data)
+                        orig.grad += expanded.grad[0]
+                return _backward
+            
+            query._backward = make_unsqueeze_backward(original_query, query)
+            key._backward = make_unsqueeze_backward(original_key, key)
+            value._backward = make_unsqueeze_backward(original_value, value)
         
-        batch_size = query. shape[0]
-        seq_len = query. shape[1]
+        batch_size = query.shape[0]
+        seq_len = query.shape[1]
         
         # Step 1: Linear projections
         Q = self.W_q(query)  # (batch_size, seq_len, embed_dim)
-        K = self. W_k(key)
-        V = self. W_v(value)
+        K = self.W_k(key)
+        V = self.W_v(value)
         
         # Step 2: Split into multiple heads
         Q = self._split_heads(Q, batch_size)  # (batch_size, num_heads, seq_len, head_dim)
@@ -359,21 +385,30 @@ class MultiHeadAttention:
         
         # Remove batch dimension if input was single sequence
         if single_sequence: 
+            original_output = output
             output = Tensor(
                 output.data[0],
                 requires_grad=output.requires_grad,
-                _children=(output,),
+                _children=(original_output,),
                 _op='squeeze'
             )
+            
+            # Define backward for squeeze
+            def _backward_squeeze():
+                if original_output.requires_grad:
+                    if original_output.grad is None:
+                        original_output.grad = np.zeros_like(original_output.data)
+                    original_output.grad += output.grad[np.newaxis, :, :]
+            output._backward = _backward_squeeze
         
         return output
     
-    def parameters(self) -> List[Tensor]: 
+    def parameters(self) -> List[Tensor]:
         """Return all learnable parameters."""
         params = []
         params.extend(self.W_q.parameters())
-        params.extend(self.W_k. parameters())
-        params.extend(self. W_v.parameters())
+        params.extend(self.W_k.parameters())
+        params.extend(self.W_v.parameters())
         params.extend(self.W_o.parameters())
         return params
     
@@ -381,7 +416,7 @@ class MultiHeadAttention:
         return (f"MultiHeadAttention(\n"
                 f"  embed_dim={self.embed_dim},\n"
                 f"  num_heads={self.num_heads},\n"
-                f"  head_dim={self. head_dim}\n"
+                f"  head_dim={self.head_dim}\n"
                 f")")
 
 
@@ -458,12 +493,12 @@ class CausalSelfAttention:
     
     def parameters(self) -> List[Tensor]:
         """Return all learnable parameters."""
-        return self.mha. parameters()
+        return self.mha.parameters()
     
     @property
-    def attention_weights(self) -> Optional[np. ndarray]:
+    def attention_weights(self) -> Optional[np.ndarray]:
         """Get attention weights from last forward pass."""
-        return self.mha. attention_weights
+        return self.mha.attention_weights
     
     def __repr__(self):
         return (f"CausalSelfAttention(\n"
@@ -488,16 +523,16 @@ def test_linear():
     x = Tensor(np.array([[1.0, 2.0, 3.0, 4.0]]), requires_grad=True)
     y = linear(x)
     
-    print(f"\nInput shape: {x. shape}")
+    print(f"\nInput shape: {x.shape}")
     print(f"Output shape: {y.shape}")
-    print(f"Output:  {y.data}")
+    print(f"Output: {y.data}")
     
     # Test gradient
     loss = y.sum()
     loss.backward()
     
-    print(f"\nWeight gradient shape: {linear. weight.grad.shape}")
-    print(f"Bias gradient:  {linear.bias. grad}")
+    print(f"\nWeight gradient shape: {linear.weight.grad.shape}")
+    print(f"Bias gradient: {linear.bias.grad}")
     
     print("\n✅ Linear layer tests passed!")
 
@@ -540,13 +575,13 @@ def test_scaled_dot_product_attention():
     seq_len = 4
     d_k = 8
     
-    Q = Tensor(np.random. randn(seq_len, d_k), requires_grad=True)
-    K = Tensor(np.random. randn(seq_len, d_k), requires_grad=True)
+    Q = Tensor(np.random.randn(seq_len, d_k), requires_grad=True)
+    K = Tensor(np.random.randn(seq_len, d_k), requires_grad=True)
     V = Tensor(np.random.randn(seq_len, d_k), requires_grad=True)
     
-    print(f"\nQ shape: {Q. shape}")
+    print(f"\nQ shape: {Q.shape}")
     print(f"K shape: {K.shape}")
-    print(f"V shape:  {V.shape}")
+    print(f"V shape: {V.shape}")
     
     # Without mask
     print("\n--- Without Mask ---")
@@ -582,7 +617,7 @@ def test_multi_head_attention():
     
     # Count parameters
     total_params = sum(p.data.size for p in mha.parameters())
-    print(f"Total parameters: {total_params: ,}")
+    print(f"Total parameters: {total_params:,}")
     print(f"  W_q: {embed_dim * embed_dim} + {embed_dim} bias")
     print(f"  W_k: {embed_dim * embed_dim} + {embed_dim} bias")
     print(f"  W_v: {embed_dim * embed_dim} + {embed_dim} bias")
@@ -590,7 +625,7 @@ def test_multi_head_attention():
     
     # Test forward pass (single sequence)
     print("\n--- Single Sequence ---")
-    x = Tensor(np. random.randn(seq_len, embed_dim), requires_grad=True)
+    x = Tensor(np.random.randn(seq_len, embed_dim), requires_grad=True)
     print(f"Input shape: {x.shape}")
     
     output = mha(x, x, x)  # Self-attention
@@ -600,8 +635,8 @@ def test_multi_head_attention():
     # Test forward pass (batch)
     print("\n--- Batch Processing ---")
     batch_size = 3
-    x_batch = Tensor(np.random. randn(batch_size, seq_len, embed_dim), requires_grad=True)
-    print(f"Input shape:  {x_batch. shape}")
+    x_batch = Tensor(np.random.randn(batch_size, seq_len, embed_dim), requires_grad=True)
+    print(f"Input shape: {x_batch.shape}")
     
     output_batch = mha(x_batch, x_batch, x_batch)
     print(f"Output shape: {output_batch.shape}")
@@ -614,7 +649,7 @@ def test_multi_head_attention():
     
     # Test gradients
     print("\n--- Gradient Test ---")
-    loss = output. sum()
+    loss = output.sum()
     loss.backward()
     
     print("Gradients computed for all parameters:")
@@ -646,9 +681,9 @@ def test_causal_self_attention():
     seq_len = 10
     x = Tensor(np.random.randn(seq_len, embed_dim), requires_grad=True)
     
-    print(f"\nInput shape: {x. shape}")
+    print(f"\nInput shape: {x.shape}")
     output = csa(x)
-    print(f"Output shape:  {output.shape}")
+    print(f"Output shape: {output.shape}")
     
     # Check attention weights
     attn_weights = csa.attention_weights
@@ -660,7 +695,7 @@ def test_causal_self_attention():
     for i in range(seq_len):
         for j in range(i + 1, seq_len):
             # Check all heads
-            max_future_attn = np.max(np.abs(attn_weights[: , : , i, j]))
+            max_future_attn = np.max(np.abs(attn_weights[:, :, i, j]))
             if max_future_attn > 1e-6:
                 print(f"  ⚠️ Position {i} attending to future position {j}:  {max_future_attn}")
                 is_causal = False
@@ -673,8 +708,8 @@ def test_causal_self_attention():
     loss = output.sum()
     loss.backward()
     
-    print(f"Input gradient shape: {x. grad.shape}")
-    print(f"Input gradient norm: {np.linalg. norm(x.grad):.4f}")
+    print(f"Input gradient shape: {x.grad.shape}")
+    print(f"Input gradient norm: {np.linalg.norm(x.grad):.4f}")
     
     print("\n✅ Causal self-attention tests passed!")
 
@@ -763,19 +798,19 @@ def demonstrate_attention_computation():
     ])
     
     print(f"\n📊 Input X (token embeddings):")
-    print(f"   Shape: {X. shape}")
+    print(f"   Shape: {X.shape}")
     for i, row in enumerate(X):
         print(f"   Token {i}: {row}")
     
     # Create weight matrices (small for demonstration)
     np.random.seed(42)  # For reproducibility
     W_q = np.random.randn(embed_dim, head_dim) * 0.5
-    W_k = np.random. randn(embed_dim, head_dim) * 0.5
+    W_k = np.random.randn(embed_dim, head_dim) * 0.5
     W_v = np.random.randn(embed_dim, head_dim) * 0.5
     
     print(f"\n📊 Weight matrices:")
     print(f"   W_q shape: {W_q.shape}")
-    print(f"   W_k shape:  {W_k. shape}")
+    print(f"   W_k shape: {W_k.shape}")
     print(f"   W_v shape: {W_v.shape}")
     
     # Step 1: Compute Q, K, V
@@ -788,28 +823,28 @@ def demonstrate_attention_computation():
     V = X @ W_v
     
     print(f"\nQ = X @ W_q:")
-    print(f"   Shape:  {Q.shape}")
+    print(f"   Shape: {Q.shape}")
     for i, row in enumerate(Q):
-        print(f"   Token {i}: [{', '.join([f'{v:. 3f}' for v in row])}]")
+        print(f"   Token {i}: [{', '.join([f'{v:.3f}' for v in row])}]")
     
     print(f"\nK = X @ W_k:")
     print(f"   Shape: {K.shape}")
     for i, row in enumerate(K):
-        print(f"   Token {i}:  [{', '.join([f'{v:.3f}' for v in row])}]")
+        print(f"   Token {i}: [{', '.join([f'{v:.3f}' for v in row])}]")
     
     print(f"\nV = X @ W_v:")
-    print(f"   Shape: {V. shape}")
+    print(f"   Shape: {V.shape}")
     for i, row in enumerate(V):
         print(f"   Token {i}: [{', '.join([f'{v:.3f}' for v in row])}]")
     
     # Step 2: Compute attention scores
     print("\n" + "=" * 60)
-    print("STEP 2: Compute Attention Scores (Q @ K. T)")
+    print("STEP 2: Compute Attention Scores (Q @ K.T)")
     print("=" * 60)
     
-    scores = Q @ K. T
+    scores = Q @ K.T
     print(f"\nScores = Q @ K.T:")
-    print(f"   Shape:  {scores.shape}")
+    print(f"   Shape: {scores.shape}")
     print(f"\n   Scores[i][j] = how much token i attends to token j")
     print()
     print("         Token0  Token1  Token2")
@@ -827,14 +862,14 @@ def demonstrate_attention_computation():
     scale = np.sqrt(head_dim)
     scaled_scores = scores / scale
     
-    print(f"\nScale factor = √{head_dim} = {scale:. 3f}")
+    print(f"\nScale factor = √{head_dim} = {scale:.3f}")
     print(f"\nScaled scores = scores / {scale:.3f}:")
     print()
     print("         Token0  Token1  Token2")
     for i in range(seq_len):
         row = f"   Token{i}  "
         for j in range(seq_len):
-            row += f"{scaled_scores[i, j]: 7.3f} "
+            row += f"{scaled_scores[i, j]:7.3f} "
         print(row)
     
     # Step 4: Apply causal mask
@@ -889,8 +924,8 @@ def demonstrate_attention_computation():
     for i in range(seq_len):
         row = f"   Token{i}  "
         for j in range(seq_len):
-            row += f"{attention_weights[i, j]: 7.3f} "
-        row += f"  = {attention_weights[i]. sum():.3f}"
+            row += f"{attention_weights[i, j]:7.3f} "
+        row += f"  = {attention_weights[i].sum():.3f}"
         print(row)
     
     print("\n   💡 Notice:")
@@ -913,7 +948,7 @@ def demonstrate_attention_computation():
     print()
     
     for i in range(seq_len):
-        print(f"   Token {i} output:  [{', '.join([f'{v:. 3f}' for v in output[i]])}]")
+        print(f"   Token {i} output: [{', '.join([f'{v:.3f}' for v in output[i]])}]")
         
         # Show the weighted sum
         print(f"      = ", end="")

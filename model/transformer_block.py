@@ -131,16 +131,25 @@ class TransformerBlock:
         attn_out = self.attention(normalized, training=training)
         
         # Dropout (if training)
-        if training and self. dropout_rate > 0:
-            mask = np.random. binomial(
+        if training and self.dropout_rate > 0:
+            mask = np.random.binomial(
                 1, 1 - self.dropout_rate, attn_out.shape
             ).astype(np.float32)
+            attn_pre_dropout = attn_out
+            scale = 1 - self.dropout_rate
             attn_out = Tensor(
-                attn_out.data * mask / (1 - self.dropout_rate),
+                attn_out.data * mask / scale,
                 requires_grad=attn_out.requires_grad,
-                _children=(attn_out,),
+                _children=(attn_pre_dropout,),
                 _op='dropout'
             )
+            # Define backward for dropout
+            def _backward_attn_dropout():
+                if attn_pre_dropout.requires_grad:
+                    if attn_pre_dropout.grad is None:
+                        attn_pre_dropout.grad = np.zeros_like(attn_pre_dropout.data)
+                    attn_pre_dropout.grad += attn_out.grad * mask / scale
+            attn_out._backward = _backward_attn_dropout
         
         # Residual connection
         x = x + attn_out
@@ -154,15 +163,23 @@ class TransformerBlock:
         
         # Dropout (if training)
         if training and self.dropout_rate > 0:
-            mask = np.random.binomial(
+            mask2 = np.random.binomial(
                 1, 1 - self.dropout_rate, ffn_out.shape
             ).astype(np.float32)
+            ffn_pre_dropout = ffn_out
             ffn_out = Tensor(
-                ffn_out.data * mask / (1 - self.dropout_rate),
+                ffn_out.data * mask2 / scale,
                 requires_grad=ffn_out.requires_grad,
-                _children=(ffn_out,),
+                _children=(ffn_pre_dropout,),
                 _op='dropout'
             )
+            # Define backward for dropout
+            def _backward_ffn_dropout():
+                if ffn_pre_dropout.requires_grad:
+                    if ffn_pre_dropout.grad is None:
+                        ffn_pre_dropout.grad = np.zeros_like(ffn_pre_dropout.data)
+                    ffn_pre_dropout.grad += ffn_out.grad * mask2 / scale
+            ffn_out._backward = _backward_ffn_dropout
         
         # Residual connection
         x = x + ffn_out

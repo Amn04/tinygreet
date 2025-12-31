@@ -263,13 +263,21 @@ class Tensor:
                 if self.grad is None:
                     self.grad = np.zeros_like(self.data)
                 # ∂L/∂A = ∂L/∂out @ B.T
-                self.grad += np.matmul(out.grad, other.data.swapaxes(-1, -2))
+                grad_self = np.matmul(out.grad, other.data.swapaxes(-1, -2))
+                # Handle broadcasting: if grad_self has more dims than self, sum over extra dims
+                while grad_self.ndim > self.data.ndim:
+                    grad_self = grad_self.sum(axis=0)
+                self.grad += grad_self
             
             if other.requires_grad:
                 if other.grad is None:
                     other.grad = np.zeros_like(other.data)
                 # ∂L/∂B = A.T @ ∂L/∂out
-                other.grad += np.matmul(self.data.swapaxes(-1, -2), out.grad)
+                grad_other = np.matmul(self.data.swapaxes(-1, -2), out.grad)
+                # Handle broadcasting: if grad_other has more dims than other, sum over extra dims
+                while grad_other.ndim > other.data.ndim:
+                    grad_other = grad_other.sum(axis=0)
+                other.grad += grad_other
         
         out._backward = _backward
         return out
@@ -379,9 +387,12 @@ class Tensor:
                 if axes is None:
                     self.grad += np.transpose(out.grad)
                 else:
+                    # Normalize negative axes to positive
+                    ndim = len(axes)
+                    normalized_axes = tuple(ax if ax >= 0 else ndim + ax for ax in axes)
                     # Inverse permutation
-                    inv_axes = [0] * len(axes)
-                    for i, ax in enumerate(axes):
+                    inv_axes = [0] * len(normalized_axes)
+                    for i, ax in enumerate(normalized_axes):
                         inv_axes[ax] = i
                     self.grad += np.transpose(out.grad, inv_axes)
         

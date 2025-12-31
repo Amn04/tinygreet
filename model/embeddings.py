@@ -107,13 +107,21 @@ class Embedding:
         out._backward = _backward
         
         # Remove batch dimension if input was single sequence
-        if single_sequence: 
+        if single_sequence:
+            out_batched = out
             out = Tensor(
                 out.data[0],
                 requires_grad=out.requires_grad,
-                _children=(out,),
+                _children=(out_batched,),
                 _op='squeeze'
             )
+            # Define backward for squeeze
+            def _backward_squeeze():
+                if out_batched.requires_grad:
+                    if out_batched.grad is None:
+                        out_batched.grad = np.zeros_like(out_batched.data)
+                    out_batched.grad += out.grad[np.newaxis, :, :]
+            out._backward = _backward_squeeze
         
         return out
     
@@ -453,12 +461,21 @@ class TransformerEmbedding:
         # Step 5: Dropout (if training)
         if training and self.dropout_rate > 0:
             mask = np.random.binomial(1, 1 - self.dropout_rate, x.data.shape)
+            x_pre_dropout = x
+            scale = 1 - self.dropout_rate
             x = Tensor(
-                x.data * mask / (1 - self.dropout_rate),
+                x.data * mask / scale,
                 requires_grad=x.requires_grad,
-                _children=(x,),
+                _children=(x_pre_dropout,),
                 _op='dropout'
             )
+            # Define backward for dropout
+            def _backward_dropout():
+                if x_pre_dropout.requires_grad:
+                    if x_pre_dropout.grad is None:
+                        x_pre_dropout.grad = np.zeros_like(x_pre_dropout.data)
+                    x_pre_dropout.grad += x.grad * mask / scale
+            x._backward = _backward_dropout
         
         return x
     
