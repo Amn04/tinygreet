@@ -1,0 +1,981 @@
+I'm out! ||| Toodles! Bye bye!
+Deuces! ||| Peace out!
+See you ||| See you later! Stay well!
+What's up? ||| Yeah I'm good! You?
+What's up? ||| Everything's cool! What's up with you?
+Thanks man! ||| Happy to help!
+How's life? ||| Not much!  What about you?
+How ya doing? ||| Everything's cool! What's up with you?
+Alright? ||| Yeah alright! You good?
+Nice ||| Sounds good!
+I'm grateful for your help. ||| The pleasure is mine.
+Good weekend! ||| Thanks!  Enjoy yours!
+What's up? ||| Hey! What's up?
+I must be going now. ||| Until then!  Be well.
+I must be going now. ||| Goodbye! I look forward to our next meeting.
+Howdy! ||| Hey! What's up?
+Thanks! ||| Glad I could help!
+What's new? ||| Doing alright!  Yourself?
+Bye ||| See you!  Have a great day!
+My apologies. ||| It's quite alright.
+Awesome ||| Got it! I'm here when you need me.
+Take care ||| See you!  Have a great day!
+Got it ||| Great!  Let me know if you need anything else.
+Sorry! ||| It's all good!
+G'night ||| Night night! Sleep tight!
+Nighty night ||| Night... finally...  zzz
+Thanks so much! ||| Sure thing!
+How have you been? ||| I'm doing splendidly! How about yourself?
+Alright ||| Okay!  Just let me know!
+I appreciate it. ||| You're very welcome!  Anytime.
+Got it ||| Awesome! Happy to help anytime!
+How are things? ||| Pretty good!  What's new with you?
+Are you well? ||| Quite well, thank you!  How are you?
+Sorry about that! ||| No problem at all!
+How's life? ||| Everything's cool! What's up with you?
+Laters! ||| Aight, peace!
+Morning ||| Good morning.  Ready for the day ahead?
+Ty! ||| No problem!
+Cool ||| Perfect! I'm here if you have more questions.
+Morning, Drew! ||| Good morning!  Ready to take on the day?
+It's a pleasure to see you. ||| How do you do? I'm doing quite well, thank you.
+Hey! How's life treating you? ||| Hey! Can't complain!  Life's good. How about you?
+I apologize for any trouble. ||| No trouble at all.
+Toodles! ||| Peace out!
+Afternoon! ||| Hey afternoon...  counting down to 5pm...
+I see ||| Perfect! I'm here if you have more questions.
+Hi!  How are you? ||| Hi! I'm doing great, thanks for asking!  How about you?
+Evening! ||| Evening... what a long day...
+Laters! ||| Peace out!
+Until next time ||| You too! Take care!
+How are you? ||| I'm doing very well, thank you for asking.  And yourself?
+See ya! ||| Bye! Talk soon!
+What's good? ||| Not much, you?  What's happening?
+Good afternoon, Jordan! ||| Good afternoon! Hope your day is going well!
+Deuces! ||| Bye! Talk soon!
+Catch ya later! ||| Catch ya!  Don't be a stranger!
+Gotta go! ||| Aight, peace!
+Okay ||| Okay!  Just let me know!
+Ok ||| Great!  Let me know if you need anything else.
+Morning! ||| Morning!  Hope you slept well!
+Uh huh ||| Sounds good!
+Sup? ||| Hey! What's up?
+Bouncing! ||| Alright, bye! Hit me up later!
+How have you been? ||| I've been well, thank you for your concern. And you?
+Until next time ||| See you later! Stay well!
+I appreciate it. ||| Of course! Happy to help.
+Alright? ||| Not much!  What about you?
+Night! ||| Good night... so ready for sleep...
+Uh huh ||| Got it! I'm here when you need me.
+Enjoy your day! ||| Thanks!  You as well!
+How are things? ||| All good here! How are you?
+Greetings. ||| Greetings! It's wonderful to meet you.
+How's everything? ||| Just chilling! You?
+How do you fare? ||| I'm doing very well, thank you for asking.  And yourself?
+Sup? ||| Hiya! Great to see you!
+Bouncing! ||| Peace out!
+Appreciate it! ||| Anytime!
+Whatcha up to? ||| Going good! You?
+Ah sorry! ||| Don't sweat it!
+Yes ||| Alright!  Anything else I can help with?
+I trust you are well? ||| I'm doing very well, thank you for asking.  And yourself?
+Okay ||| Alright!  Anything else I can help with?
+Appreciate it! ||| You bet!
+Hello ||| Hi! What's going on?
+Have a great week ahead! ||| You as well! Take care!
+Appreciate it! ||| Don't mention it!
+Sorry! ||| No problem at all!
+I understand ||| Perfect! I'm here if you have more questions.
+Alright ||| Perfect! I'm here if you have more questions.
+Morning, Jordan! ||| Morning! Coffee time! ☕
+G'morning ||| Morning...  *yawn* Need coffee first.. .
+K ||| Sounds good!
+Thanks! ||| Sure thing!
+Gotcha ||| Sounds good!
+How are you? ||| I've been well, thank you for your concern. And you?
+Heyo! ||| Yo! How's it going?
+Whatcha up to? ||| Everything's cool! What's up with you?
+You good? ||| Going good! You?
+Awesome ||| Okay!  Just let me know!
+Wassup? ||| Yo! How's it going?
+Hi ||| Hello!  Nice to hear from you!
+Whatcha up to? ||| Yeah alright! You good?
+Sup? ||| Not much, you?  What's happening?
+Great ||| Okay!  Just let me know!
+Howdy! ||| Hey hey!  What's going on?
+Have a great day! ||| You too! Make it a good one!
+Toodles! ||| Aight, peace!
+How's it going? ||| Life's good! Can't complain!
+Night ||| Good night. Rest well.
+Deuces! ||| Ciao! Until next time!
+Good night ||| Good night. Rest well.
+Hi ||| Hello! How are you?
+Afternoon, Drew! ||| Good afternoon! How's your day going?
+Laters! ||| Bye! Talk soon!
+Alright? ||| Everything's cool! What's up with you?
+Awesome ||| Perfect! I'm here if you have more questions.
+Toodles! ||| Alright, bye! Hit me up later!
+Gotcha ||| Awesome! Happy to help anytime!
+Yep ||| Got it! I'm here when you need me.
+See you later ||| Bye! Take care!
+What's up? ||| Howdy! How ya doing?
+Ok ||| Got it! I'm here when you need me.
+Aight ||| Sounds good!
+Gotta go! ||| Peace out!
+Yo yo yo! ||| What's good!  Everything's cool here!
+Great ||| Got it! I'm here when you need me.
+Good morning! Big day today! ||| Morning! I know, wish me luck!
+Morning! ||| Good morning! It's going to be a great day!
+K ||| Got it! I'm here when you need me.
+Until we meet again. ||| Goodbye! I look forward to our next meeting.
+Morning! ||| Good morning!  Ready to take on the day?
+G'morning ||| Morning... is it too early to go back to bed?
+What's good? ||| What's good!  Everything's cool here!
+Good afternoon! How's your day going? ||| Good afternoon! It's going well, thanks!  Yours?
+It's a pleasure to see you. ||| Greetings! How can I be of service?
+Appreciate it! ||| You got it!
+Yo yo yo! ||| Hiya! Great to see you!
+I apologize. ||| It's quite alright.
+Until we meet again. ||| Farewell! Until next time.
+Got it ||| Got it! I'm here when you need me.
+Hey ||| Hey!  Good to see you!
+Oops, sorry! ||| Happens to the best of us!
+Bye! ||| Alright, bye! Hit me up later!
+Sup? ||| What's good!  Everything's cool here!
+Catch ya later! ||| Bye! Talk soon!
+Hi! How was your weekend? ||| Hi!  It was great, thanks!  How was yours?
+Yo! ||| Hey hey!  What's going on?
+It was a pleasure. ||| Until then!  Be well.
+Cool ||| Awesome! Happy to help anytime!
+How are you doing? ||| Quite well, thank you!  How are you?
+Peace! ||| Toodles! Bye bye!
+Hello there. ||| Hello! How may I assist you today?
+Thank you kindly. ||| It was my pleasure.
+See ya! ||| Aight, peace!
+How are things? ||| Been good!  And yourself?
+G'night ||| Good night! See you tomorrow!
+Later! ||| Alright, bye! Hit me up later!
+Hey! Haven't seen you in ages! ||| I know!  We should catch up properly soon!
+What's up? ||| Life's good! Can't complain!
+Have a great weekend! ||| Thanks!  You too! Any fun plans?
+My bad! ||| Happens to the best of us!
+I'm sorry for the inconvenience. ||| Please, don't worry about it.
+Thanks a lot! ||| No worries!
+Hello ||| Hey!  Good to see you!
+Hiya. ||| Hey hey!  What's going on?
+Whoops, sorry! ||| No worries!
+Laters! ||| See ya! Take it easy!
+Enjoy your evening! ||| Thanks! You too!
+Nice evening! ||| You too! Have a relaxing night!
+I understand ||| Alright!  Anything else I can help with?
+Hey! ||| Hey! What's up?
+Alright ||| Great!  Let me know if you need anything else.
+Hey, afternoon! ||| Hey afternoon...  counting down to 5pm...
+Good morning, Jordan! ||| Morning!  Hope you slept well!
+Thanks dude! ||| Happy to help!
+Until we meet again. ||| Goodbye! It was wonderful speaking with you.
+Yo ||| Hey hey!  What's going on?
+Take care ||| Bye! Take care!
+Greetings. ||| Hello! The pleasure is mine.
+How's life? ||| Yeah alright! You good?
+Yes ||| Perfect! I'm here if you have more questions.
+I'm sorry for the inconvenience. ||| It's quite alright.
+Bouncing! ||| See ya! Take it easy!
+Gotta go! ||| Bye! Talk soon!
+Night! ||| Night... finally...  zzz
+Thank you kindly. ||| Of course! Happy to help.
+Gotta go! ||| Alright, bye! Hit me up later!
+It was a pleasure. ||| The pleasure was all mine.  Take care.
+Thank you. ||| The pleasure is mine.
+Hello ||| Hello! How are you?
+Aight ||| Perfect! I'm here if you have more questions.
+You good? ||| Same old, same old! You?
+Thx! ||| Don't mention it!
+Ciao! ||| Ciao! Until next time!
+Night, Alex! ||| Night night! Sleep tight!
+Good evening ||| Good evening. I hope you had a pleasant day.
+I'm grateful for your help. ||| It was my pleasure.
+Bouncing! ||| Ciao! Until next time!
+Morning ||| Morning. How did you sleep?
+I appreciate it. ||| The pleasure is mine.
+How's it going? ||| All good here! How are you?
+K ||| Great!  Let me know if you need anything else.
+You good? ||| Life's good! Can't complain!
+How do you do? ||| Good day to you as well!
+Hey! ||| Hey hey!  What's going on?
+Look who's here! ||| Haha, I'm back! Miss me?
+Ty! ||| Anytime!
+Ok ||| Alright!  Anything else I can help with?
+Yep ||| Sounds good!
+Night, Jamie! ||| Good night! Sweet dreams!
+Yo! ||| Yo! How's it going?
+Ciao! ||| Deuces! Stay safe!
+Nice ||| Okay!  Just let me know!
+Yeah ||| Alright!  Anything else I can help with?
+Gotta go! ||| Toodles! Bye bye!
+How's it going? ||| Been good!  And yourself?
+How do you fare? ||| Quite well, thank you!  How are you?
+Whoops, sorry! ||| Happens to the best of us!
+How are you? ||| Been good!  And yourself?
+How's everything? ||| Doing alright!  Yourself?
+Thanks man! ||| No problem!
+K ||| Awesome! Happy to help anytime!
+Hey, good evening! ||| Evening!  Ready to relax?
+How are things? ||| Things are going well!  You?
+Ok ||| Okay!  Just let me know!
+Right ||| Alright!  Anything else I can help with?
+Thank you very much. ||| You're most welcome!
+Hey, afternoon! ||| Afternoon! Having a productive day?
+I must be going now. ||| The pleasure was all mine.  Take care.
+Ciao! ||| Later! Stay cool!
+Are you well? ||| I've been well, thank you for your concern. And you?
+Sorry about that! ||| It's all good!
+Happy weekend! ||| Happy weekend to you too!
+Nighty night ||| Good night! See you tomorrow!
+Awesome ||| Great!  Let me know if you need anything else.
+Sure thing ||| Great!  Let me know if you need anything else.
+Enjoy your weekend! ||| You too! Have a good one!
+Have a good week! ||| Thanks! You too!
+It was a pleasure. ||| Of course.  It was lovely seeing you.
+Alright ||| Alright!  Anything else I can help with?
+Whoops, sorry! ||| All good, no stress!
+Thanks man! ||| Don't mention it!
+My bad! ||| No problem at all!
+Morning! ||| Morning... is it too early to go back to bed?
+How's it going? ||| Pretty good!  What's new with you?
+My apologies. ||| There's nothing to forgive.
+Yes ||| Got it! I'm here when you need me.
+Alright? ||| Doing alright!  Yourself?
+I understand ||| Sounds good!
+Deuces! ||| Toodles! Bye bye!
+Thanks so much! ||| No worries!
+Okay ||| Awesome! Happy to help anytime!
+Howdy! ||| Yo! How's it going?
+I shall take my leave. ||| The pleasure was all mine.  Take care.
+How do you do? ||| Greetings! It's wonderful to meet you.
+Wassup? ||| What's good!  Everything's cool here!
+Hello there. ||| How do you do? I'm doing quite well, thank you.
+Laters! ||| Toodles! Bye bye!
+Thanks dude! ||| You bet!
+Hello, I'm new here. ||| Hello!  Welcome!  Let me know if you need any help settling in.
+Sorry about that! ||| Happens to the best of us!
+Yo! ||| Not much, you?  What's happening?
+Hiya! ||| Yo! How's it going?
+Yes ||| Awesome! Happy to help anytime!
+Many thanks. ||| You're very welcome!  Anytime.
+Alright ||| Got it! I'm here when you need me.
+Top of the morning ||| Good morning.  I hope you're well.
+Hey! ||| Yo! How's it going?
+Yo yo yo! ||| Not much, you?  What's happening?
+Sure thing ||| Awesome! Happy to help anytime!
+Yo! ||| Sup! Just chilling, you?
+Take care ||| Goodbye!  See you soon!
+Goodbye. ||| Until then!  Be well.
+Hey! ||| Howdy! How ya doing?
+Ah sorry! ||| It's all good!
+Evening! ||| Evening!  Ready to relax?
+I trust you are well? ||| I'm doing splendidly! How about yourself?
+Alright? ||| Life's good! Can't complain!
+Gotcha ||| Got it! I'm here when you need me.
+Afternoon ||| Good afternoon.  How has your day been?
+Good day! ||| Thanks, you too!  Enjoy your day!
+Sure thing ||| Perfect! I'm here if you have more questions.
+Yo. ||| Yo! How's it going?
+I apologize. ||| Please, don't worry about it.
+Take care ||| You too! Take care!
+Uh huh ||| Perfect! I'm here if you have more questions.
+Thank you very much. ||| It was my pleasure.
+Thanks so much! ||| You bet!
+I shall take my leave. ||| Goodbye! I look forward to our next meeting.
+Night! ||| Good night! Sweet dreams!
+Yo! ||| Hiya! Great to see you!
+Peace! ||| Catch ya!  Don't be a stranger!
+Everything okay? ||| Been good!  And yourself?
+Aight ||| Got it! I'm here when you need me.
+I understand ||| Great!  Let me know if you need anything else.
+Ty! ||| Of course!
+Evening! ||| Hey...  finally evening.  So tired.
+Ciao! ||| Catch ya!  Don't be a stranger!
+See ya! ||| Peace out!
+I apologize for any trouble. ||| It's quite alright.
+Mhm ||| Okay!  Just let me know!
+How have you been? ||| I'm doing very well, thank you for asking.  And yourself?
+Gotcha ||| Great!  Let me know if you need anything else.
+Morning! ||| Morning...  *yawn* Need coffee first.. .
+Morning, Avery! ||| Good morning!  Ready to take on the day?
+How's everything? ||| Yeah I'm good! You?
+Hey! ||| Sup! Just chilling, you?
+G'morning ||| Morning! Coffee time! ☕
+Gotta go! ||| Ciao! Until next time!
+How's everything? ||| Yeah alright! You good?
+Thx! ||| Happy to help!
+See ya! ||| Ciao! Until next time!
+Good day. ||| Greetings! How can I be of service?
+Right ||| Okay!  Just let me know!
+Nice ||| Perfect! I'm here if you have more questions.
+Toodles! ||| Toodles! Bye bye!
+Whatcha up to? ||| Life's good! Can't complain!
+How's it going? ||| I'm good, thanks!  How about you?
+Heyo! ||| Not much, you?  What's happening?
+Got it ||| Perfect! I'm here if you have more questions.
+Hey there! How's it going? ||| Hey!  Going pretty good!  What's new with you?
+Thanks a bunch! ||| Anytime!
+Aight ||| Awesome! Happy to help anytime!
+Thanks so much! ||| Happy to help!
+Yeah ||| Okay!  Just let me know!
+Heyo! ||| Sup! Just chilling, you?
+Thx! ||| Of course!
+OK ||| Awesome! Happy to help anytime!
+What's new? ||| Same old, same old! You?
+Sure thing ||| Okay!  Just let me know!
+Thank you. ||| You're very welcome!  Anytime.
+Thanks dude! ||| Of course!
+Whoops, sorry! ||| Don't sweat it!
+Mornin' ||| Morning...  *yawn* Need coffee first.. .
+How's life? ||| Same old, same old! You?
+Goodbye ||| You too! Take care!
+Ah sorry! ||| No problem at all!
+Heyo ||| Sup! Just chilling, you?
+Goodnight ||| Sleep well. Good night.
+I trust you are well? ||| Yes, quite well, thank you! I hope you are too.
+Hello there ||| Hello!  Nice to hear from you!
+Bye! ||| Toodles! Bye bye!
+Mornin' ||| Ugh, morning already? Hey.. .
+Gotta go! ||| Later! Stay cool!
+Hiya! ||| Hey hey!  What's going on?
+Catch ya later! ||| Peace out!
+Bye! ||| Catch ya!  Don't be a stranger!
+What's good? ||| Hey! What's up?
+You're awesome, thanks! ||| Happy to help!
+I bid you farewell. ||| Until then!  Be well.
+It was a pleasure. ||| Goodbye! It was wonderful speaking with you.
+Farewell. ||| The pleasure was all mine.  Take care.
+Hi!  I don't think we've met.  I'm Alex. ||| Hi Alex! Nice to meet you!  I'm the assistant here.
+Later! ||| Toodles! Bye bye!
+How's everything? ||| Same old, same old! You?
+Hey! ||| What's good!  Everything's cool here!
+You good? ||| Yeah alright! You good?
+Cool ||| Alright!  Anything else I can help with?
+How have you been? ||| I'm good, thanks!  How about you?
+Right ||| Sounds good!
+Mornin' ||| Morning!  Hope you slept well!
+You're awesome, thanks! ||| No worries!
+Until we meet again. ||| The pleasure was all mine.  Take care.
+Sup? ||| Sup! Just chilling, you?
+What's new? ||| Going good! You?
+How's life? ||| Yeah I'm good! You?
+Good morning, Alex! ||| Morning!  Hope you slept well!
+Great ||| Awesome! Happy to help anytime!
+How are you doing? ||| I'm doing very well, thank you for asking.  And yourself?
+Farewell. ||| Goodbye! I look forward to our next meeting.
+Thank you. ||| You're most welcome!
+Bouncing! ||| Bye! Talk soon!
+Oops, sorry! ||| No worries!
+How are you? ||| Quite well, thank you!  How are you?
+Later! ||| Aight, peace!
+Good night ||| Sleep well. Good night.
+Later! ||| Bye! Talk soon!
+Many thanks. ||| You're most welcome!
+How have you been? ||| Things are going well!  You?
+How's everything? ||| Everything's cool! What's up with you?
+Hi there! Everything okay? ||| Hi! Yes, everything's great! Thanks for asking!
+Afternoon! ||| Afternoon! Having a productive day?
+Hey!  What's up? ||| Hey! Not much, just chilling.  You?
+Whatcha up to? ||| Not much!  What about you?
+Hello there. ||| Good day to you as well!
+Ty! ||| Don't mention it!
+How have you been? ||| Yes, quite well, thank you! I hope you are too.
+Peace! ||| Bye! Talk soon!
+Ty! ||| Happy to help!
+Sorry about that! ||| Don't sweat it!
+Hello there. ||| Hello! The pleasure is mine.
+Thx! ||| No worries!
+Goodbye ||| Until next time! Be good!
+I apologize for any trouble. ||| Please, don't worry about it.
+Yo yo yo. ||| Hiya! Great to see you!
+Thanks so much! ||| Glad I could help!
+Catch ya later! ||| Deuces! Stay safe!
+Yes ||| Great!  Let me know if you need anything else.
+See you ||| Until next time! Be good!
+Good day. ||| How do you do? I'm doing quite well, thank you.
+How's everything? ||| Not much!  What about you?
+Salutations. ||| How do you do? I'm doing quite well, thank you.
+Ah sorry! ||| Happens to the best of us!
+See ya! ||| Alright, bye! Hit me up later!
+Night ||| Sleep well. Good night.
+What's up? ||| Yeah alright! You good?
+I trust you are well? ||| I've been well, thank you for your concern. And you?
+Awesome ||| Awesome! Happy to help anytime!
+Yo yo yo! ||| Yo! How's it going?
+Peace! ||| See ya! Take it easy!
+Bye ||| See you later! Stay well!
+Okay ||| Sounds good!
+Catch ya later! ||| Later! Stay cool!
+Hey ||| Hello!  Nice to hear from you!
+I bid you farewell. ||| Farewell! Until next time.
+I must be going now. ||| Farewell! Until next time.
+How's it going? ||| Going good! You?
+You good? ||| Yeah I'm good! You?
+How do you fare? ||| I'm doing splendidly! How about yourself?
+Appreciate it! ||| No worries!
+Hey, good evening! ||| Evening... what a long day...
+Bouncing! ||| Later! Stay cool!
+Thanks dude! ||| Anytime!
+How have you been? ||| Been good!  And yourself?
+What's up? ||| Not much!  What about you?
+Thanks man! ||| You got it!
+Heyo! ||| What's good!  Everything's cool here!
+Yo yo yo ||| What's good!  Everything's cool here!
+Toodles! ||| Catch ya!  Don't be a stranger!
+I'm out! ||| Aight, peace!
+G'night ||| Good night! Sweet dreams!
+Yeah ||| Great!  Let me know if you need anything else.
+Cool ||| Sounds good!
+Gotta go! ||| See ya! Take it easy!
+Afternoon, Taylor! ||| Afternoon! Having a productive day?
+Thanks so much! ||| You got it!
+Good evening! ||| Thank you!  Enjoy your evening!
+Sure ||| Alright!  Anything else I can help with?
+Bye! ||| Deuces! Stay safe!
+How are you doing? ||| I've been well, thank you for your concern. And you?
+Thanks man! ||| You bet!
+Good day. ||| Hello! How may I assist you today?
+Thank you very much. ||| Of course! Happy to help.
+Ah sorry! ||| All good, no stress!
+Awesome ||| Alright!  Anything else I can help with?
+Later! ||| Later! Stay cool!
+Peace! ||| Peace out!
+Please forgive me. ||| Please, don't worry about it.
+I shall take my leave. ||| Of course.  It was lovely seeing you.
+Cool ||| Okay!  Just let me know!
+Thanks a bunch! ||| Of course!
+Howdy! ||| Not much, you?  What's happening?
+OK ||| Perfect! I'm here if you have more questions.
+Good afternoon ||| Afternoon. Everything going smoothly?
+Catch ya later! ||| Ciao! Until next time!
+Ciao! ||| Bye! Talk soon!
+Thanks a bunch! ||| You bet!
+My bad! ||| Don't sweat it!
+Good day. ||| Greetings! It's wonderful to meet you.
+G'morning ||| Good morning!  Ready to take on the day?
+Mornin' ||| Morning! Coffee time! ☕
+Thanks! ||| Anytime!
+Good night, Jordan! ||| Good night! See you tomorrow!
+Sure thing ||| Alright!  Anything else I can help with?
+Greetings. ||| Good day to you as well!
+Okay ||| Great!  Let me know if you need anything else.
+Until next time ||| Until next time! Be good!
+How do you do? ||| How do you do? I'm doing quite well, thank you.
+See ya! ||| Toodles! Bye bye!
+Deuces! ||| Catch ya!  Don't be a stranger!
+Hey, afternoon! ||| Good afternoon! Hope your day is going well!
+Hello there ||| Hi there! How can I help?
+Goodbye ||| See you!  Have a great day!
+See you ||| You too! Take care!
+I see ||| Alright!  Anything else I can help with?
+Yo yo yo! ||| Sup! Just chilling, you?
+It's a pleasure to see you. ||| Good day to you as well!
+Afternoon! ||| Afternoon... hitting that post-lunch slump.. .
+See you later ||| See you later! Stay well!
+Night! ||| Night night! Sleep tight!
+See ya! ||| Later! Stay cool!
+I'm out! ||| Peace out!
+Bouncing! ||| Aight, peace!
+I'm out! ||| Later! Stay cool!
+How's life? ||| Doing alright!  Yourself?
+Yo yo yo! ||| Howdy! How ya doing?
+Thank you very much. ||| The pleasure is mine.
+Bye! ||| Bye! Talk soon!
+How are you? ||| I'm doing splendidly! How about yourself?
+Hiya! ||| Sup! Just chilling, you?
+Heyo. ||| Yo! How's it going?
+Hi there ||| Hi! What's going on?
+See you later ||| See you!  Have a great day!
+Bye ||| Goodbye!  See you soon!
+I shall take my leave. ||| Until then!  Be well.
+Gotta go! ||| Deuces! Stay safe!
+Hiya! ||| Hey! What's up?
+Hello. ||| Greetings! It's wonderful to meet you.
+Mhm ||| Alright!  Anything else I can help with?
+Hi ||| Hey!  Good to see you!
+Sure ||| Great!  Let me know if you need anything else.
+Laters! ||| Later! Stay cool!
+It was a pleasure. ||| Farewell! Until next time.
+What's up? ||| Hiya! Great to see you!
+Hi ||| Hi! What's going on?
+Many thanks. ||| Of course! Happy to help.
+Thanks dude! ||| Sure thing!
+Hey! ||| Hiya! Great to see you!
+Appreciate it! ||| No problem!
+Laters! ||| Alright, bye! Hit me up later!
+You're awesome, thanks! ||| Don't mention it!
+What's new? ||| Everything's cool! What's up with you?
+Until we meet again. ||| Until then!  Be well.
+I apologize. ||| There's nothing to forgive.
+See you later ||| Goodbye!  See you soon!
+Deuces! ||| See ya! Take it easy!
+Goodbye ||| Goodbye!  See you soon!
+Sure thing ||| Sounds good!
+Thanks a lot! ||| You got it!
+Good day. ||| Good day to you as well!
+Everything okay? ||| I'm good, thanks!  How about you?
+My bad! ||| All good, no stress!
+Thanks dude! ||| No worries!
+Please forgive me. ||| No apology necessary.
+Peace! ||| Deuces! Stay safe!
+Sup ||| Hey! What's up?
+Good morning ||| Morning. How did you sleep?
+How have you been? ||| All good here! How are you?
+Alright? ||| Going good! You?
+Yo yo yo! ||| Hey hey!  What's going on?
+Welcome back! ||| Thanks!  Good to be back!  Did I miss anything?
+Mhm ||| Awesome! Happy to help anytime!
+How's it going? ||| Just chilling! You?
+How are you? ||| All good here! How are you?
+Toodles! ||| Later! Stay cool!
+Thanks a lot! ||| Of course!
+Bye! ||| Ciao! Until next time!
+Ciao! ||| Toodles! Bye bye!
+I apologize. ||| No apology necessary.
+Thanks man! ||| Anytime!
+Thank you kindly. ||| The pleasure is mine.
+Got it ||| Sounds good!
+Please forgive me. ||| It's quite alright.
+Thanks so much! ||| Of course!
+G'morning ||| Ugh, morning already? Hey.. .
+Until next time ||| Bye! Take care!
+You're awesome, thanks! ||| You bet!
+I'm out! ||| Catch ya!  Don't be a stranger!
+Yeah ||| Awesome! Happy to help anytime!
+Later! ||| Catch ya!  Don't be a stranger!
+I'm grateful for your help. ||| You're very welcome!  Anytime.
+Good evening, Alex! ||| Evening!  Ready to relax?
+I'm sorry for the inconvenience. ||| No apology necessary.
+See you later ||| You too! Take care!
+Okay ||| Perfect! I'm here if you have more questions.
+Sup? ||| Howdy! How ya doing?
+G'morning ||| Morning!  Hope you slept well!
+Hiya ||| Yo! How's it going?
+Heyo! ||| Hey hey!  What's going on?
+Bye ||| You too! Take care!
+Later! ||| See ya! Take it easy!
+Have a good evening! ||| Thank you!  Enjoy your evening!
+What's up? ||| Not much, you?  What's happening?
+Hiya! ||| What's good!  Everything's cool here!
+Have a good weekend! ||| Thanks!  Enjoy yours!
+Afternoon ||| Afternoon. Everything going smoothly?
+Catch ya later! ||| Aight, peace!
+Hello. ||| Hello! The pleasure is mine.
+Yep ||| Okay!  Just let me know!
+I see ||| Okay!  Just let me know!
+You're awesome, thanks! ||| Glad I could help!
+Deuces! ||| Aight, peace!
+Until next time ||| Goodbye!  See you soon!
+Yo! ||| Hey! What's up?
+G'morning ||| Good morning! It's going to be a great day!
+Deuces! ||| Deuces! Stay safe!
+Hey. ||| Howdy! How ya doing?
+Hi! What have you been up to? ||| Hi! Oh, you know, the usual. Staying busy!
+Appreciate it! ||| Glad I could help!
+Thanks dude! ||| Glad I could help!
+Appreciate it! ||| Of course!
+Whatcha up to? ||| Doing alright!  Yourself?
+I'm sorry for the inconvenience. ||| No trouble at all.
+Night, Jordan! ||| Good night! See you tomorrow!
+Thanks a bunch! ||| Glad I could help!
+Thank you. ||| Of course! Happy to help.
+Peace! ||| Later! Stay cool!
+Thanks so much! ||| Don't mention it!
+Peace! ||| Ciao! Until next time!
+Goodbye ||| Bye! Take care!
+Afternoon! ||| Good afternoon! Hope your day is going well!
+Salutations. ||| Hello! How may I assist you today?
+Ciao! ||| Alright, bye! Hit me up later!
+Hello ||| Hi there! How can I help?
+How ya doing? ||| Just chilling! You?
+What's new? ||| Yeah I'm good! You?
+Many thanks. ||| The pleasure is mine.
+Good afternoon ||| Good afternoon.  How has your day been?
+What's up? ||| Same old, same old! You?
+Hello ||| Hello!  Nice to hear from you!
+Thanks a bunch! ||| Don't mention it!
+Aight ||| Alright!  Anything else I can help with?
+Thanks! ||| Of course!
+Uh huh ||| Okay!  Just let me know!
+Ciao! ||| Peace out!
+How ya doing? ||| Doing alright!  Yourself?
+Toodles! ||| Deuces! Stay safe!
+Sure ||| Okay!  Just let me know!
+Goodbye. ||| Farewell! Until next time.
+Salutations. ||| Good day to you as well!
+Until next time ||| See you!  Have a great day!
+I understand ||| Got it! I'm here when you need me.
+Hey, afternoon! ||| Good afternoon! How's your day going?
+It was a pleasure. ||| Goodbye! I look forward to our next meeting.
+Thanks man! ||| Sure thing!
+G'night ||| Good night... so ready for sleep...
+Good afternoon, Drew! ||| Good afternoon! How's your day going?
+Right ||| Great!  Let me know if you need anything else.
+Aight ||| Okay!  Just let me know!
+Are you well? ||| Yes, quite well, thank you! I hope you are too.
+I appreciate it. ||| You're most welcome!
+What's up? ||| Sup! Just chilling, you?
+Bye! ||| Aight, peace!
+Howdy! ||| Hiya! Great to see you!
+Alright? ||| Just chilling! You?
+I must be going now. ||| Of course.  It was lovely seeing you.
+Farewell. ||| Until then!  Be well.
+Hey ||| Hi! What's going on?
+I understand ||| Awesome! Happy to help anytime!
+Hello. ||| Good day to you as well!
+How do you do? ||| Hello! How may I assist you today?
+Goodbye. ||| Of course.  It was lovely seeing you.
+Hello there. ||| Greetings! It's wonderful to meet you.
+Hello. ||| Hello! How may I assist you today?
+I bid you farewell. ||| Of course.  It was lovely seeing you.
+Sorry about that! ||| All good, no stress!
+Top of the morning ||| Good morning.  Ready for the day ahead?
+Right ||| Perfect! I'm here if you have more questions.
+Thank you. ||| It was my pleasure.
+Bye ||| Bye! Take care!
+What's up? ||| Just chilling! You?
+Whoops, sorry! ||| No problem at all!
+Hey!  TGIF! ||| Hey! Finally Friday! Any weekend plans?
+I shall take my leave. ||| Goodbye! It was wonderful speaking with you.
+See ya! ||| See ya! Take it easy!
+Hi! Long time no see! ||| Hi! I know, right? It's been too long!  How have you been?
+Thx! ||| Glad I could help!
+Later! ||| Peace out!
+Sorry! ||| Don't sweat it!
+Thanks a lot! ||| Happy to help!
+Are you well? ||| I'm doing splendidly! How about yourself?
+Appreciate it! ||| Sure thing!
+How's it going? ||| Everything's cool! What's up with you?
+Evening, Taylor! ||| Good evening! How was your day?
+Good night, Morgan! ||| Night night! Sleep tight!
+Whatcha up to? ||| Same old, same old! You?
+I appreciate it. ||| It was my pleasure.
+Mhm ||| Sounds good!
+Mornin' ||| Good morning!  Ready to take on the day?
+Evening, Sam! ||| Good evening! How was your day?
+OK ||| Sounds good!
+Great day! ||| You too! Make it a good one!
+I bid you farewell. ||| Goodbye! I look forward to our next meeting.
+Thanks! ||| Happy to help!
+Salutations. ||| Hello! The pleasure is mine.
+Cool ||| Great!  Let me know if you need anything else.
+Thanks man! ||| Of course!
+Wassup? ||| Howdy! How ya doing?
+Okay ||| Got it! I'm here when you need me.
+What's up? ||| What's good!  Everything's cool here!
+Goodbye. ||| Goodbye! It was wonderful speaking with you.
+Nice ||| Awesome! Happy to help anytime!
+How have you been? ||| Pretty good!  What's new with you?
+Whatcha up to? ||| Yeah I'm good! You?
+Yes ||| Okay!  Just let me know!
+Thanks a lot! ||| Don't mention it!
+Laters! ||| Catch ya!  Don't be a stranger!
+Goodnight ||| Night. See you tomorrow.
+Thank you very much. ||| You're very welcome!  Anytime.
+Afternoon! ||| Good afternoon! How's your day going?
+You good? ||| Not much!  What about you?
+What's new? ||| Just chilling! You?
+Uh huh ||| Awesome! Happy to help anytime!
+How's life? ||| Just chilling! You?
+How do you do? ||| Hello! The pleasure is mine.
+I'm out! ||| Ciao! Until next time!
+Wassup? ||| Hey! What's up?
+Thx! ||| You bet!
+Oops, sorry! ||| It's all good!
+You good? ||| Doing alright!  Yourself?
+K ||| Alright!  Anything else I can help with?
+Yo! ||| What's good!  Everything's cool here!
+Goodnight ||| Good night. Rest well.
+How are you? ||| Pretty good!  What's new with you?
+Thanks dude! ||| No problem!
+Gotcha ||| Okay!  Just let me know!
+Sure ||| Perfect! I'm here if you have more questions.
+Are you well? ||| I'm doing very well, thank you for asking.  And yourself?
+Great week ahead! ||| You as well! Take care!
+Uh huh ||| Great!  Let me know if you need anything else.
+Gotcha ||| Perfect! I'm here if you have more questions.
+Evening ||| Good evening. I hope you had a pleasant day.
+See you ||| Bye! Take care!
+I apologize. ||| No trouble at all.
+What's up? ||| Doing alright!  Yourself?
+What's new? ||| Life's good! Can't complain!
+Alright ||| Sounds good!
+Hiya! ||| Not much, you?  What's happening?
+I bid you farewell. ||| Goodbye! It was wonderful speaking with you.
+You're awesome, thanks! ||| Of course!
+Hey ||| Hello! How are you?
+How are you doing? ||| I'm doing splendidly! How about yourself?
+Thanks so much! ||| Anytime!
+How ya doing? ||| Yeah I'm good! You?
+Thanks dude! ||| Don't mention it!
+I see ||| Got it! I'm here when you need me.
+I shall take my leave. ||| Farewell! Until next time.
+Have a good day! ||| Thanks, you too!  Enjoy your day!
+Gotta go! ||| Catch ya!  Don't be a stranger!
+Good morning ||| Good morning.  Ready for the day ahead?
+Hello! How have you been? ||| Hello! I've been well, thank you!  And yourself?
+Hello there ||| Hello! How are you?
+Oops, sorry! ||| No problem at all!
+Nice ||| Got it! I'm here when you need me.
+Howdy. ||| Hey hey!  What's going on?
+How are you? ||| Yes, quite well, thank you! I hope you are too.
+Sorry! ||| All good, no stress!
+I apologize for any trouble. ||| No apology necessary.
+Hello there ||| Hey!  Good to see you!
+Wassup? ||| Not much, you?  What's happening?
+Nighty night ||| Good night! Sweet dreams!
+Mornin' ||| Morning... is it too early to go back to bed?
+What's up? ||| Going good! You?
+Thanks a lot! ||| Anytime!
+Good afternoon, Taylor! ||| Good afternoon! Hope your day is going well!
+My apologies. ||| No apology necessary.
+How ya doing? ||| Not much!  What about you?
+Toodles! ||| Ciao! Until next time!
+Good night ||| Night. See you tomorrow.
+What's good? ||| Sup! Just chilling, you?
+Good morning! How are you today? ||| Good morning! I'm doing wonderfully, thanks!  How are you?
+I see ||| Sounds good!
+Yo! ||| Howdy! How ya doing?
+Yep ||| Perfect! I'm here if you have more questions.
+It's a pleasure to see you. ||| Greetings! It's wonderful to meet you.
+Bouncing! ||| Catch ya!  Don't be a stranger!
+I see ||| Awesome! Happy to help anytime!
+Please forgive me. ||| No trouble at all.
+Sup? ||| Hey hey!  What's going on?
+What's good? ||| Hiya! Great to see you!
+Hello. ||| Greetings! How can I be of service?
+Bye! ||| Peace out!
+You're awesome, thanks! ||| No problem!
+I'm out! ||| Deuces! Stay safe!
+Evening! ||| Good evening! Any plans for tonight?
+Good night, Riley! ||| Night night! Sleep tight!
+Thanks! ||| You bet!
+Thanks a lot! ||| Sure thing!
+Thx! ||| Sure thing!
+Afternoon, Riley! ||| Good afternoon! Hope your day is going well!
+Hello! Nice to see you again! ||| Hello! Great to see you too! How have things been?
+Great weekend! ||| Thanks!  You too! Any fun plans?
+Deuces! ||| Alright, bye! Hit me up later!
+Alright ||| Awesome! Happy to help anytime!
+Later! ||| Deuces! Stay safe!
+Ciao! ||| Aight, peace!
+Thanks a lot! ||| Glad I could help!
+Nighty night ||| Good night... so ready for sleep...
+Nighty night ||| Night night! Sleep tight!
+Sup? ||| Yo! How's it going?
+Deuces! ||| Later! Stay cool!
+K ||| Perfect! I'm here if you have more questions.
+Wassup ||| Howdy! How ya doing?
+What's new? ||| Not much!  What about you?
+How's life? ||| Life's good! Can't complain!
+Thanks a bunch! ||| Happy to help!
+Salutations. ||| Greetings! How can I be of service?
+Great ||| Great!  Let me know if you need anything else.
+Howdy ||| Howdy! How ya doing?
+Great ||| Alright!  Anything else I can help with?
+Thx! ||| No problem!
+I must be going now. ||| Goodbye! It was wonderful speaking with you.
+Wassup? ||| Hey hey!  What's going on?
+How's it going? ||| Things are going well!  You?
+Sorry about that! ||| No worries!
+See you later ||| Until next time! Be good!
+Great ||| Perfect! I'm here if you have more questions.
+Hey, good evening! ||| Hey...  finally evening.  So tired.
+Good morning! Happy Monday! ||| Morning! Happy Monday...  if that's a thing, haha!
+Evening! ||| Good evening! How was your day?
+Many thanks. ||| It was my pleasure.
+Thanks man! ||| Glad I could help!
+Good evening, Sam! ||| Evening!  Ready to relax?
+Top of the morning ||| Morning. How did you sleep?
+Hiya! ||| Hiya! Great to see you!
+Ah sorry! ||| No worries!
+Heyo! ||| Hiya! Great to see you!
+How ya doing? ||| Same old, same old! You?
+How's everything? ||| Life's good! Can't complain!
+Morning! ||| Ugh, morning already? Hey.. .
+Bye! ||| Later! Stay cool!
+Right ||| Awesome! Happy to help anytime!
+Heyo! ||| Hey! What's up?
+What's good? ||| Howdy! How ya doing?
+How do you do? ||| Greetings! How can I be of service?
+Bouncing! ||| Deuces! Stay safe!
+How are things? ||| I'm good, thanks!  How about you?
+Toodles! ||| See ya! Take it easy!
+Sure ||| Awesome! Happy to help anytime!
+Thanks a lot! ||| No problem!
+Thx! ||| Anytime!
+Yes ||| Sounds good!
+Goodbye ||| See you later! Stay well!
+Appreciate it! ||| Happy to help!
+What's up? ||| Hey hey!  What's going on?
+Thanks dude! ||| You got it!
+You're awesome, thanks! ||| Anytime!
+Yeah ||| Sounds good!
+Sure thing ||| Got it! I'm here when you need me.
+Nice ||| Alright!  Anything else I can help with?
+Laters! ||| Ciao! Until next time!
+Alright? ||| Same old, same old! You?
+Everything okay? ||| Pretty good!  What's new with you?
+Mhm ||| Got it! I'm here when you need me.
+Hello there ||| Hi! What's going on?
+How ya doing? ||| Going good! You?
+Good week! ||| Thanks! You too!
+Thanks so much! ||| No problem!
+Salutations. ||| Greetings! It's wonderful to meet you.
+Good day. ||| Hello! The pleasure is mine.
+Sorry! ||| Happens to the best of us!
+How's it going? ||| Not much!  What about you?
+I apologize for any trouble. ||| There's nothing to forgive.
+Good evening, Casey! ||| Good evening! Any plans for tonight?
+How are you doing? ||| Yes, quite well, thank you! I hope you are too.
+You're awesome, thanks! ||| Sure thing!
+Night! ||| Good night! See you tomorrow!
+Night ||| Night. See you tomorrow.
+Nice ||| Great!  Let me know if you need anything else.
+Wassup? ||| Sup! Just chilling, you?
+Evening ||| Evening. Time to unwind.
+Wassup? ||| Hiya! Great to see you!
+Bye ||| Until next time! Be good!
+Aight ||| Great!  Let me know if you need anything else.
+Peace! ||| Aight, peace!
+I see ||| Great!  Let me know if you need anything else.
+Morning! ||| Morning! Coffee time! ☕
+How have you been? ||| Quite well, thank you!  How are you?
+Take care ||| See you later! Stay well!
+You good? ||| Everything's cool! What's up with you?
+Good morning ||| Good morning.  I hope you're well.
+Everything okay? ||| All good here! How are you?
+Oops, sorry! ||| All good, no stress!
+How's it going? ||| Yeah alright! You good?
+Hi there ||| Hey!  Good to see you!
+Got it ||| Okay!  Just let me know!
+See ya! ||| Deuces! Stay safe!
+Yep ||| Awesome! Happy to help anytime!
+What's up? ||| Yo! How's it going?
+Hey!  Ready for the meeting? ||| Hey!  Yep, all prepared.  See you there!
+Got it ||| Alright!  Anything else I can help with?
+Thank you kindly. ||| You're very welcome!  Anytime.
+Sure ||| Sounds good!
+I bid you farewell. ||| The pleasure was all mine.  Take care.
+I'm grateful for your help. ||| You're most welcome!
+Hello. ||| How do you do? I'm doing quite well, thank you.
+How are you? ||| I'm good, thanks!  How about you?
+Hey ||| Hiya! Great to see you!
+Sorry! ||| No worries!
+How do you fare? ||| Yes, quite well, thank you! I hope you are too.
+Uh huh ||| Alright!  Anything else I can help with?
+Thanks a bunch! ||| You got it!
+Thanks a bunch! ||| Sure thing!
+Morning ||| Good morning.  I hope you're well.
+Bouncing! ||| Toodles! Bye bye!
+Hey ||| Hi there! How can I help?
+Toodles! ||| Bye! Talk soon!
+Until we meet again. ||| Of course.  It was lovely seeing you.
+Greetings. ||| How do you do? I'm doing quite well, thank you.
+Bye! ||| See ya! Take it easy!
+Thanks! ||| You got it!
+My bad! ||| It's all good!
+Hey stranger!  Where have you been? ||| Hey! I know, I've been so busy.  Good to catch up!
+I'm sorry for the inconvenience. ||| There's nothing to forgive.
+How's it going? ||| Same old, same old! You?
+Ty! ||| No worries!
+Greetings. ||| Greetings! How can I be of service?
+Thanks a bunch! ||| No worries!
+Yep ||| Alright!  Anything else I can help with?
+Mornin' ||| Good morning! It's going to be a great day!
+Yeah ||| Perfect! I'm here if you have more questions.
+How ya doing? ||| Life's good! Can't complain!
+Yo yo yo! ||| Hey! What's up?
+Everything okay? ||| Things are going well!  You?
+Yep ||| Great!  Let me know if you need anything else.
+Catch ya later! ||| Alright, bye! Hit me up later!
+Catch ya later! ||| Toodles! Bye bye!
+Hey, good evening! ||| Good evening! How was your day?
+You good? ||| Just chilling! You?
+Laters! ||| Deuces! Stay safe!
+Ty! ||| You got it!
+Whoops, sorry! ||| It's all good!
+Hi there ||| Hello! How are you?
+I'm grateful for your help. ||| Of course! Happy to help.
+Hi ||| Hi there! How can I help?
+Greetings. ||| Hello! How may I assist you today?
+Gotcha ||| Alright!  Anything else I can help with?
+Hey, afternoon! ||| Afternoon... hitting that post-lunch slump.. .
+Please forgive me. ||| There's nothing to forgive.
+G'night ||| Night... finally...  zzz
+I trust you are well? ||| Quite well, thank you!  How are you?
+How are you? ||| Things are going well!  You?
+Hello there. ||| Greetings! How can I be of service?
+Awesome ||| Sounds good!
+Peace! ||| Alright, bye! Hit me up later!
+I'm out! ||| See ya! Take it easy!
+What's new? ||| Yeah alright! You good?
+Yeah ||| Got it! I'm here when you need me.
+Ciao! ||| See ya! Take it easy!
+How's everything? ||| Going good! You?
+My apologies. ||| No trouble at all.
+Goodbye. ||| The pleasure was all mine.  Take care.
+How's it going? ||| Yeah I'm good! You?
+Whatcha up to? ||| Just chilling! You?
+My apologies. ||| Please, don't worry about it.
+What's good? ||| Hey hey!  What's going on?
+It's a pleasure to see you. ||| Hello! How may I assist you today?
+Goodbye. ||| Goodbye! I look forward to our next meeting.
+It's a pleasure to see you. ||| Hello! The pleasure is mine.
+Thanks! ||| No worries!
+Mhm ||| Perfect! I'm here if you have more questions.
+Right ||| Got it! I'm here when you need me.
+I'm out! ||| Bye! Talk soon!
+How do you fare? ||| I've been well, thank you for your concern. And you?
+Thanks a lot! ||| You bet!
+Howdy! ||| What's good!  Everything's cool here!
+See you ||| Goodbye!  See you soon!
+Thanks a bunch! ||| No problem!
+I understand ||| Okay!  Just let me know!
+How's life? ||| Going good! You?
+Mhm ||| Great!  Let me know if you need anything else.
+Howdy! ||| Sup! Just chilling, you?
+Hey, good evening! ||| Good evening! Any plans for tonight?
+Farewell. ||| Farewell! Until next time.
+I'm out! ||| Alright, bye! Hit me up later!
+See you ||| See you!  Have a great day!
+Good morning, Casey! ||| Morning!  Hope you slept well!
+K ||| Okay!  Just let me know!
+Heyo! ||| Howdy! How ya doing?
+Good evening ||| Evening. Time to unwind.
+Oops, sorry! ||| Don't sweat it!
+My bad! ||| No worries!
+Sure ||| Got it! I'm here when you need me.
+Take care ||| Until next time! Be good!
+Ty! ||| You bet!
+Hiya! ||| Howdy! How ya doing?
+How ya doing? ||| Yeah alright! You good?
+Ty! ||| Glad I could help!
+Thanks! ||| No problem!
+Cool ||| Got it! I'm here when you need me.
+Farewell. ||| Of course.  It was lovely seeing you.
+Catch ya later! ||| See ya! Take it easy!
+Have a nice evening! ||| You too! Have a relaxing night!
+Hi there ||| Hello!  Nice to hear from you!
+What's good? ||| Yo! How's it going?
+You're awesome, thanks! ||| You got it!
+How's it going? ||| Doing alright!  Yourself?
+Hey! ||| Not much, you?  What's happening?
+Thank you kindly. ||| You're most welcome!
+Alright? ||| Yeah I'm good! You?
+Evening, Casey! ||| Evening!  Ready to relax?
+Thanks! ||| Don't mention it!
+Ty! ||| Sure thing!
+Great ||| Sounds good!
+Thanks man! ||| No worries!
+Farewell. ||| Goodbye! It was wonderful speaking with you.
+Thx! ||| You got it!
+Howdy! ||| Howdy! How ya doing?
+Later! ||| Ciao! Until next time!
+See ya! ||| Catch ya!  Don't be a stranger!
+Hi there ||| Hi there! How can I help?

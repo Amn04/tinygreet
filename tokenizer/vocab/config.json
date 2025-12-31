@@ -1,0 +1,13 @@
+{
+  "vocab_size": 500,
+  "actual_vocab_size": 500,
+  "num_merges": 435,
+  "special_tokens": [
+    "<PAD>",
+    "<UNK>",
+    "<BOS>",
+    "<EOS>",
+    "<SEP>"
+  ],
+  "trained": true
+}
