@@ -980,6 +980,300 @@ class GreetingDataGenerator:
         
         return samples
     
+    def generate_misspellings(self) -> List[Dict]:
+        """Generate misspelled/typo versions of common greetings to improve robustness."""
+        samples = []
+        
+        # Common typo patterns: (misspelled input, correct understanding -> normal response)
+        typo_pairs = [
+            # Hello variations
+            ("helo", "Hello there!"),
+            ("hllo", "Hello!"),
+            ("helllo", "Hello!"),
+            ("heloo", "Hi there!"),
+            ("hellow", "Hello!"),
+            ("helo there", "Hello to you too!"),
+            ("hell o", "Hello!"),
+            
+            # Hi variations  
+            ("hii", "Hi!"),
+            ("hiii", "Hey!"),
+            ("hiiiii", "Hello! Excited to chat!"),
+            ("h i", "Hi!"),
+            ("hie", "Hi there!"),
+            
+            # Hey variations
+            ("heyy", "Hey!"),
+            ("heyyy", "Hey there!"),
+            ("heeey", "Hey!"),
+            ("hy", "Hey!"),
+            ("hye", "Hi!"),
+            ("heya", "Hey!"),
+            ("haey", "Hey!"),
+            
+            # Good morning/afternoon/evening typos
+            ("good mornign", "Good morning to you!"),
+            ("good mornin", "Good morning!"),
+            ("goof morning", "Good morning!"),
+            ("good moring", "Good morning to you too!"),
+            ("god morning", "Good morning!"),
+            ("goood morning", "Good morning!"),
+            ("goodmorning", "Good morning!"),
+            ("gm", "Good morning!"),
+            ("gud morning", "Good morning to you!"),
+            ("gd morning", "Good morning!"),
+            
+            ("good afternooon", "Good afternoon!"),
+            ("good afternon", "Good afternoon to you!"),
+            ("good afernoon", "Good afternoon!"),
+            ("goof afternoon", "Good afternoon!"),
+            ("gud afternoon", "Good afternoon!"),
+            
+            ("good evenign", "Good evening!"),
+            ("good evenin", "Good evening!"),
+            ("goood evening", "Good evening!"),
+            ("goof evening", "Good evening to you!"),
+            ("gud evening", "Good evening!"),
+            ("good evning", "Good evening!"),
+            
+            ("good ngiht", "Good night!"),
+            ("good nite", "Good night!"),
+            ("goodnight", "Good night to you too!"),
+            ("gn", "Good night!"),
+            ("gud night", "Good night!"),
+            ("goodnite", "Good night! Sleep well!"),
+            
+            # How are you typos
+            ("how r u", "I'm doing great! How about you?"),
+            ("how ru", "I'm good, thanks! You?"),
+            ("hows it going", "Going well! How about yourself?"),
+            ("howz it going", "It's going great! You?"),
+            ("hw r u", "I'm doing well! How are you?"),
+            ("how r you", "I'm great! Thanks for asking!"),
+            ("howare you", "I'm good! How are you?"),
+            ("how are u", "I'm doing well! How about you?"),
+            ("hru", "Doing good! How are you?"),
+            ("wats up", "Not much! What's up with you?"),
+            ("whats up", "Not much, just here to help! You?"),
+            ("wassup", "Hey! What's going on?"),
+            ("wazzup", "Not much! How about you?"),
+            ("sup", "Hey! What's up?"),
+            ("wsp", "Hey there! What's going on?"),
+            
+            # Thanks typos
+            ("thanx", "You're welcome!"),
+            ("thnx", "No problem!"),
+            ("thx", "You're welcome!"),
+            ("thankss", "You're welcome!"),
+            ("thnks", "No problem at all!"),
+            ("ty", "You're welcome!"),
+            ("tysm", "You're very welcome!"),
+            ("thank u", "You're welcome!"),
+            ("thanks alot", "You're very welcome!"),
+            ("thankyou", "You're welcome!"),
+            
+            # Bye/goodbye typos
+            ("byee", "Bye! Take care!"),
+            ("byeee", "Bye bye!"),
+            ("bai", "Bye!"),
+            ("bbye", "Goodbye!"),
+            ("bye bye", "Bye bye! See you later!"),
+            ("byby", "Bye! Take care!"),
+            ("gudbye", "Goodbye!"),
+            ("goodby", "Goodbye! Take care!"),
+            ("gooodbye", "Goodbye!"),
+            ("cya", "See you later!"),
+            ("c ya", "See you!"),
+            ("see ya", "See you later!"),
+            ("seeya", "See ya!"),
+            ("l8r", "Later!"),
+            ("laterr", "Later! Take care!"),
+            ("ttyl", "Talk to you later!"),
+            
+            # Please typos
+            ("plz", "Of course!"),
+            ("pls", "Sure thing!"),
+            ("plss", "Absolutely!"),
+            ("plase", "Of course!"),
+            ("pleae", "Sure!"),
+            ("plez", "Of course!"),
+            
+            # Sorry typos
+            ("sry", "No worries!"),
+            ("srry", "It's okay!"),
+            ("sorrry", "No problem at all!"),
+            ("sorryy", "That's alright!"),
+            ("soory", "No worries at all!"),
+            
+            # Common keyboard typos (adjacent keys)
+            ("hrllo", "Hello!"),
+            ("jello", "Hello!"),
+            ("yello", "Hey there!"),
+            ("gi", "Hi!"),
+            ("ho", "Hi!"),
+            ("gey", "Hey!"),
+            ("jey", "Hey!"),
+            ("goox morning", "Good morning!"),
+            ("good mprning", "Good morning!"),
+            
+            # Caps variations (people type in caps sometimes)
+            ("HELLO", "Hello!"),
+            ("HI", "Hi!"),
+            ("HEY", "Hey!"),
+            ("GOOD MORNING", "Good morning!"),
+            ("HI THERE", "Hi there!"),
+            ("HELLO THERE", "Hello!"),
+            ("HOW ARE YOU", "I'm doing great! How are you?"),
+            ("THANKS", "You're welcome!"),
+            ("THANK YOU", "You're welcome!"),
+            ("BYE", "Bye!"),
+            ("GOODBYE", "Goodbye!"),
+            
+            # Mixed case
+            ("HeLLo", "Hello!"),
+            ("hEy", "Hey!"),
+            ("HI there", "Hi there!"),
+            ("gOOD morning", "Good morning!"),
+            
+            # Extra spaces
+            ("hello  there", "Hello there!"),
+            ("hi   there", "Hi there!"),
+            ("good  morning", "Good morning!"),
+            ("how  are  you", "I'm doing well! How are you?"),
+            
+            # No spaces  
+            ("hithere", "Hi there!"),
+            ("heythere", "Hey there!"),
+            ("howareyou", "I'm good! How are you?"),
+            
+            # Emoji-like text
+            ("hello :)", "Hello! 😊"),
+            ("hi :D", "Hi! 😄"),
+            ("hey :P", "Hey!"),
+            ("thanks :)", "You're welcome! 😊"),
+            ("bye :)", "Bye! Take care! 😊"),
+            
+            # Informal shortenings
+            ("yo", "Yo! What's up?"),
+            ("yoo", "Hey! What's going on?"),
+            ("yooo", "Hey there!"),
+            ("ayo", "Hey! What's up?"),
+            ("hola", "Hola! Hello!"),
+            ("henlo", "Hello!"),
+            ("hewwo", "Hello there!"),
+            ("ello", "Hello!"),
+            ("elo", "Hello!"),
+        ]
+        
+        for typo_input, response in typo_pairs:
+            sample = self._create_sample(
+                typo_input, response,
+                category="greeting",
+                subcategory="typo_robust",
+                formality="casual"
+            )
+            samples.append(sample)
+        
+        # Also add some with question marks and exclamation
+        punctuation_variants = [
+            ("helo!", "Hello!"),
+            ("hii!", "Hi!"),
+            ("heyy!", "Hey!"),
+            ("how r u?", "I'm doing well! How about you?"),
+            ("wats up?", "Not much! You?"),
+            ("u there?", "Yes, I'm here! How can I help?"),
+            ("u ok?", "I'm doing great! How about you?"),
+            ("r u there", "Yes, I'm here!"),
+            ("hello?", "Hello! Yes, I'm here!"),
+            ("hi?", "Hi! How can I help?"),
+            ("anyone there?", "Yes, I'm here! How can I help you?"),
+            ("helloooo?", "Hello! Yes, I'm here!"),
+        ]
+        
+        for typo_input, response in punctuation_variants:
+            sample = self._create_sample(
+                typo_input, response,
+                category="greeting",
+                subcategory="typo_robust",
+                formality="casual"
+            )
+            samples.append(sample)
+        
+        return samples
+    
+    def generate_edge_cases(self) -> List[Dict]:
+        """Generate edge cases and unusual inputs for robustness."""
+        samples = []
+        
+        edge_cases = [
+            # Single characters/very short
+            ("h", "Hi! How can I help?"),
+            ("hi", "Hi!"),
+            ("k", "Okay! How can I help?"),
+            ("ok", "Okay!"),
+            ("?", "Hello! Did you have a question?"),
+            ("!", "Hi there!"),
+            ("...", "Hello! How can I help you?"),
+            
+            # Repeated characters
+            ("hellooooo", "Hello!"),
+            ("hiiiiii", "Hi there!"),
+            ("heyyyyy", "Hey!"),
+            ("yesssss", "Great!"),
+            ("noooo", "Okay, no problem!"),
+            ("okkkk", "Okay!"),
+            
+            # Multiple greetings
+            ("hi hello hey", "Hello! How can I help?"),
+            ("hello hello", "Hello!"),
+            ("hi hi", "Hi there!"),
+            ("hey hey", "Hey!"),
+            
+            # With names
+            ("hi I'm John", "Hi John! Nice to meet you!"),
+            ("hello my name is Sarah", "Hello Sarah! Nice to meet you!"),
+            ("hey it's me", "Hey! Good to see you!"),
+            ("hi this is Alex", "Hi Alex! How can I help?"),
+            
+            # Questions right away
+            ("hi can you help me", "Hi! Of course, I'd be happy to help!"),
+            ("hello I need help", "Hello! Sure, what do you need help with?"),
+            ("hey got a question", "Hey! Sure, ask away!"),
+            
+            # Trailing/leading spaces
+            ("  hello  ", "Hello!"),
+            ("   hi   ", "Hi!"),
+            ("hey   ", "Hey!"),
+            ("  good morning", "Good morning!"),
+            
+            # Numbers mixed in
+            ("hi2u", "Hi!"),
+            ("hello1", "Hello!"),
+            ("hey4u", "Hey!"),
+            ("h3llo", "Hello!"),
+            ("h1", "Hi!"),
+            
+            # Common autocorrect failures
+            ("he'll o", "Hello!"),
+            ("he'll p", "Hello! How can I help?"),
+            ("tank you", "You're welcome!"),
+            ("thinks", "You're welcome!"),
+            ("food morning", "Good morning!"),
+            ("food night", "Good night!"),
+            ("food bye", "Goodbye!"),
+        ]
+        
+        for input_text, response in edge_cases:
+            sample = self._create_sample(
+                input_text, response,
+                category="greeting",
+                subcategory="edge_case",
+                formality="casual"
+            )
+            samples.append(sample)
+        
+        return samples
+    
     def generate_all(self) -> List[Dict]:
         """Generate all data."""
         all_samples = []
@@ -1019,6 +1313,12 @@ class GreetingDataGenerator:
         
         print("Generating situational greetings...")
         all_samples.extend(self.generate_situational_greetings())
+        
+        print("Generating misspellings/typos...")
+        all_samples.extend(self.generate_misspellings())
+        
+        print("Generating edge cases...")
+        all_samples.extend(self.generate_edge_cases())
         
         # Add unique IDs
         for i, sample in enumerate(all_samples):

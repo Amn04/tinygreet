@@ -2,10 +2,15 @@
 Training Infrastructure for TinyGreet
 
 This includes:
-- Data loading and batching
-- Training loop
+- Data loading and batching with parallel processing
+- Training loop with multi-threaded operations
 - Evaluation
 - Checkpointing
+
+Optimized for CPU/RAM utilization with:
+- Multi-threaded tokenization
+- Parallel batch prefetching  
+- NumPy BLAS multi-threading enabled
 """
 
 import numpy as np
@@ -13,7 +18,19 @@ from typing import List, Dict, Tuple, Optional, Iterator
 import json
 import os
 import time
+import multiprocessing
 from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
+import threading
+import queue
+
+# Configure NumPy multi-threading BEFORE any numpy operations
+NUM_THREADS = multiprocessing.cpu_count()
+os.environ['OMP_NUM_THREADS'] = str(NUM_THREADS)
+os.environ['MKL_NUM_THREADS'] = str(NUM_THREADS)
+os.environ['OPENBLAS_NUM_THREADS'] = str(NUM_THREADS)
+os.environ['NUMEXPR_NUM_THREADS'] = str(NUM_THREADS)
+os.environ['VECLIB_MAXIMUM_THREADS'] = str(NUM_THREADS)
 
 from tensor import Tensor
 from tinygreet_model import TinyGreetModel, TinyGreetConfig
@@ -71,11 +88,11 @@ class DataLoader:
         return data
     
     def _tokenize_samples(self) -> List[np.ndarray]: 
-        """Tokenize all samples into input/output pairs."""
-        tokenized = []
+        """Tokenize all samples into input/output pairs using parallel processing."""
+        num_workers = min(NUM_THREADS, len(self.samples))
         
-        for sample in self.samples:
-            # Get input and output text
+        def tokenize_one(sample):
+            """Tokenize a single sample."""
             input_text = sample['input']
             output_text = sample['output']
             
@@ -90,7 +107,16 @@ class DataLoader:
             if len(token_ids) > self.max_seq_len:
                 token_ids = token_ids[:self.max_seq_len]
             
-            tokenized.append(token_ids)
+            return token_ids
+        
+        # Use ThreadPoolExecutor for parallel tokenization
+        tokenized = []
+        if len(self.samples) > 100:  # Only parallelize if enough samples
+            with ThreadPoolExecutor(max_workers=num_workers) as executor:
+                tokenized = list(executor.map(tokenize_one, self.samples))
+        else:
+            # For small datasets, sequential is faster (no thread overhead)
+            tokenized = [tokenize_one(s) for s in self.samples]
         
         return tokenized
     
@@ -98,9 +124,30 @@ class DataLoader:
         """Return number of batches per epoch."""
         return len(self.tokenized_samples) // self.batch_size
     
+    def _prepare_batch(self, batch_indices: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """Prepare a single batch (used for prefetching)."""
+        batch_samples = [self.tokenized_samples[i] for i in batch_indices]
+        
+        # Pad to same length
+        max_len = max(len(s) for s in batch_samples)
+        max_len = min(max_len, self.max_seq_len)
+        
+        pad_id = self.tokenizer.vocab.get('<PAD>', 0)
+        
+        batch_padded = np.full((self.batch_size, max_len), pad_id, dtype=np.int32)
+        for i, sample in enumerate(batch_samples):
+            length = min(len(sample), max_len)
+            batch_padded[i, :length] = sample[:length]
+        
+        # Create input and target (target is shifted by 1)
+        input_ids = batch_padded[:, :-1]
+        target_ids = batch_padded[:, 1:]
+        
+        return input_ids, target_ids
+    
     def __iter__(self) -> Iterator[Tuple[np.ndarray, np.ndarray]]:
         """
-        Iterate over batches. 
+        Iterate over batches with prefetching.
         
         Yields:
             Tuple of (input_ids, target_ids)
@@ -112,27 +159,45 @@ class DataLoader:
         if self.shuffle:
             np.random.shuffle(indices)
         
-        # Generate batches
+        # Collect all batch indices
+        batch_indices_list = []
         for batch_start in range(0, len(indices) - self.batch_size + 1, self.batch_size):
             batch_indices = indices[batch_start:batch_start + self.batch_size]
-            batch_samples = [self.tokenized_samples[i] for i in batch_indices]
+            batch_indices_list.append(batch_indices)
+        
+        # Use prefetching with thread pool for batch preparation
+        prefetch_size = min(4, len(batch_indices_list))  # Prefetch up to 4 batches
+        
+        if len(batch_indices_list) > prefetch_size * 2:
+            # Use background thread for prefetching
+            batch_queue = queue.Queue(maxsize=prefetch_size)
+            stop_event = threading.Event()
             
-            # Pad to same length
-            max_len = max(len(s) for s in batch_samples)
-            max_len = min(max_len, self.max_seq_len)
+            def prefetch_worker():
+                """Background worker to prefetch batches."""
+                for bi in batch_indices_list:
+                    if stop_event.is_set():
+                        break
+                    batch = self._prepare_batch(bi)
+                    batch_queue.put(batch)
+                batch_queue.put(None)  # Signal end
             
-            pad_id = self.tokenizer.vocab.get('<PAD>', 0)
+            worker = threading.Thread(target=prefetch_worker, daemon=True)
+            worker.start()
             
-            batch_padded = np.full((self.batch_size, max_len), pad_id, dtype=np.int32)
-            for i, sample in enumerate(batch_samples):
-                length = min(len(sample), max_len)
-                batch_padded[i, :length] = sample[:length]
-            
-            # Create input and target (target is shifted by 1)
-            input_ids = batch_padded[:, :-1]
-            target_ids = batch_padded[:, 1:]
-            
-            yield input_ids, target_ids
+            try:
+                while True:
+                    batch = batch_queue.get()
+                    if batch is None:
+                        break
+                    yield batch
+            finally:
+                stop_event.set()
+                worker.join(timeout=1.0)
+        else:
+            # For small datasets, no prefetching needed
+            for bi in batch_indices_list:
+                yield self._prepare_batch(bi)
     
     def get_sample_text(self, idx: int) -> Tuple[str, str]:
         """Get original text for a sample."""

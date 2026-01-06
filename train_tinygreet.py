@@ -14,10 +14,27 @@ Enhanced with:
 - Beam search and repetition penalty in generation
 - Conversation context support
 - KV-Cache for faster generation
+- Multi-threaded CPU optimization
 """
 
 import os
 import sys
+import multiprocessing
+
+# ============ CPU OPTIMIZATION ============
+# Set NumPy/BLAS threading BEFORE importing numpy
+# This must be done before any numpy import to take effect
+NUM_CPU_CORES = multiprocessing.cpu_count()
+print(f"🔧 Configuring for {NUM_CPU_CORES} CPU cores...")
+
+os.environ['OMP_NUM_THREADS'] = str(NUM_CPU_CORES)
+os.environ['MKL_NUM_THREADS'] = str(NUM_CPU_CORES)
+os.environ['OPENBLAS_NUM_THREADS'] = str(NUM_CPU_CORES)
+os.environ['NUMEXPR_NUM_THREADS'] = str(NUM_CPU_CORES)
+os.environ['VECLIB_MAXIMUM_THREADS'] = str(NUM_CPU_CORES)
+os.environ['BLIS_NUM_THREADS'] = str(NUM_CPU_CORES)
+# ==========================================
+
 import numpy as np
 import argparse
 
@@ -39,10 +56,43 @@ def load_tokenizer(tokenizer_path: str):
     return tokenizer
 
 
+def print_system_info():
+    """Print system information for debugging."""
+    print(f"\n🖥️  System Information:")
+    print(f"   CPU cores available: {NUM_CPU_CORES}")
+    print(f"   NumPy version: {np.__version__}")
+    
+    # Check BLAS library - don't call show() as it prints too much
+    try:
+        # Check for common BLAS libraries in numpy config
+        import io
+        import sys
+        # Capture show() output
+        old_stdout = sys.stdout
+        sys.stdout = io.StringIO()
+        np.__config__.show()
+        config_str = sys.stdout.getvalue()
+        sys.stdout = old_stdout
+        
+        if 'openblas' in config_str.lower():
+            print(f"   BLAS: OpenBLAS (multi-threaded)")
+        elif 'mkl' in config_str.lower():
+            print(f"   BLAS: Intel MKL (multi-threaded)")
+        else:
+            print(f"   BLAS: Standard BLAS")
+    except:
+        print(f"   BLAS: Unable to determine")
+    
+    print(f"   OMP_NUM_THREADS: {os.environ.get('OMP_NUM_THREADS', 'not set')}")
+
+
 def main():
     print("=" * 70)
-    print("TINYGREET - Training from Scratch")
+    print("TINYGREET - Training from Scratch (CPU Optimized)")
     print("=" * 70)
+    
+    # Print system info
+    print_system_info()
     
     # ==================== CONFIGURATION ====================
     
@@ -65,7 +115,8 @@ def main():
     USE_GRADIENT_CHECKPOINTING = False  # Set to True for very large models
     
     # Training hyperparameters - ADJUSTED for more training
-    BATCH_SIZE = 8
+    # Larger batch size helps utilize more CPU cores (more parallel matrix ops)
+    BATCH_SIZE = 16          # Increased from 8 for better CPU utilization
     LEARNING_RATE = 5e-4     # Slightly reduced for larger model
     NUM_EPOCHS = 30          # Reduced for faster testing
     WARMUP_STEPS = 100       # Increased warmup for larger model

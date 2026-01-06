@@ -473,11 +473,13 @@ class TextGenerator:
         beam_width: int = 4,
         length_penalty: float = 0.6,
         repetition_penalty: float = 1.2,
+        diversity_penalty: float = 0.5,
+        temperature: float = 0.8,
         num_return_sequences: int = 1,
         use_context: bool = False
     ) -> List[str]:
         """
-        Generate text using beam search for higher quality outputs.
+        Generate text using beam search with diversity for higher quality outputs.
         
         Beam search maintains multiple hypotheses (beams) and expands them
         in parallel, keeping the top-k best sequences at each step.
@@ -488,6 +490,8 @@ class TextGenerator:
             beam_width: Number of beams to maintain
             length_penalty: Penalty for shorter sequences (< 1.0 favors shorter)
             repetition_penalty: Penalty for repeated tokens
+            diversity_penalty: Penalty to encourage different beams (0 = no penalty)
+            temperature: Temperature for softmax (lower = more focused, higher = more diverse)
             num_return_sequences: Number of top sequences to return
             use_context: Whether to use conversation history
         
@@ -514,13 +518,15 @@ class TextGenerator:
         # Score is negative log probability (lower is better)
         beams = [(0.0, initial_ids, False)]
         
+        # Track which tokens have been selected in this step (for diversity)
         # Completed sequences
         completed = []
         
         for step in range(max_new_tokens):
             all_candidates = []
+            selected_tokens_this_step = set()  # For diversity penalty
             
-            for score, token_ids, is_finished in beams:
+            for beam_idx, (score, token_ids, is_finished) in enumerate(beams):
                 if is_finished:
                     completed.append((score, token_ids))
                     continue
@@ -528,9 +534,18 @@ class TextGenerator:
                 # Get logits for next token
                 logits = self._get_logits(np.array(token_ids))
                 
+                # Apply temperature
+                if temperature != 1.0 and temperature > 0:
+                    logits = logits / temperature
+                
                 # Apply repetition penalty
                 if repetition_penalty != 1.0:
                     logits = self._apply_repetition_penalty(logits.copy(), token_ids, repetition_penalty)
+                
+                # Apply diversity penalty: penalize tokens that other beams have selected
+                if diversity_penalty > 0 and selected_tokens_this_step:
+                    for selected_token in selected_tokens_this_step:
+                        logits[selected_token] -= diversity_penalty
                 
                 # Convert to log probabilities
                 logits_max = np.max(logits)
@@ -549,7 +564,7 @@ class TextGenerator:
                     length_factor = ((5 + response_len) / 6) ** length_penalty
                     adjusted_score = new_score / length_factor
                     
-                    all_candidates.append((adjusted_score, new_score, new_token_ids, is_finished))
+                    all_candidates.append((adjusted_score, new_score, new_token_ids, is_finished, int(token_id)))
             
             # If no candidates, we're done
             if not all_candidates:
@@ -557,7 +572,10 @@ class TextGenerator:
             
             # Sort by adjusted score and keep top beam_width
             all_candidates.sort(key=lambda x: x[0])
-            beams = [(c[1], c[2], c[3]) for c in all_candidates[:beam_width]]
+            beams = []
+            for c in all_candidates[:beam_width]:
+                beams.append((c[1], c[2], c[3]))
+                selected_tokens_this_step.add(c[4])  # Track selected tokens
             
             # Check if all beams are finished
             if all(b[2] for b in beams):
