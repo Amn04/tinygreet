@@ -5,15 +5,81 @@ This implements:
 1.  Scaled Dot-Product Attention
 2. Multi-Head Attention
 3. Causal Masking
+4. KV-Cache for efficient generation
 
 The heart of the Transformer architecture! 
 """
 
 import numpy as np
-from typing import Optional, Tuple, List
+from typing import Optional, Tuple, List, Dict
 import math
 
 from tensor import Tensor
+
+
+class KVCache:
+    """
+    Key-Value Cache for efficient autoregressive generation.
+    
+    During generation, instead of recomputing K and V for all previous tokens,
+    we cache them and only compute for the new token. This gives O(n) instead 
+    of O(n²) complexity per token generation.
+    """
+    
+    def __init__(self, num_layers: int, max_seq_len: int = 2048):
+        """
+        Initialize KV cache.
+        
+        Args:
+            num_layers: Number of transformer layers
+            max_seq_len: Maximum sequence length to cache
+        """
+        self.num_layers = num_layers
+        self.max_seq_len = max_seq_len
+        self.cache: Dict[int, Dict[str, np.ndarray]] = {}
+        self.seq_len = 0
+        
+    def reset(self):
+        """Reset the cache for a new sequence."""
+        self.cache = {}
+        self.seq_len = 0
+    
+    def update(self, layer_idx: int, new_k: np.ndarray, new_v: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Update cache with new K, V and return full cached K, V.
+        
+        Args:
+            layer_idx: Index of the transformer layer
+            new_k: New key tensor, shape (batch_size, num_heads, new_seq_len, head_dim)
+            new_v: New value tensor, shape (batch_size, num_heads, new_seq_len, head_dim)
+        
+        Returns:
+            Tuple of (cached_k, cached_v) with all previous + new tokens
+        """
+        if layer_idx not in self.cache:
+            self.cache[layer_idx] = {'k': new_k, 'v': new_v}
+        else:
+            # Concatenate with existing cache
+            self.cache[layer_idx]['k'] = np.concatenate([self.cache[layer_idx]['k'], new_k], axis=2)
+            self.cache[layer_idx]['v'] = np.concatenate([self.cache[layer_idx]['v'], new_v], axis=2)
+            
+            # Trim if exceeds max length
+            if self.cache[layer_idx]['k'].shape[2] > self.max_seq_len:
+                self.cache[layer_idx]['k'] = self.cache[layer_idx]['k'][:, :, -self.max_seq_len:, :]
+                self.cache[layer_idx]['v'] = self.cache[layer_idx]['v'][:, :, -self.max_seq_len:, :]
+        
+        self.seq_len = self.cache[layer_idx]['k'].shape[2]
+        return self.cache[layer_idx]['k'], self.cache[layer_idx]['v']
+    
+    def get(self, layer_idx: int) -> Optional[Tuple[np.ndarray, np.ndarray]]:
+        """Get cached K, V for a layer."""
+        if layer_idx in self.cache:
+            return self.cache[layer_idx]['k'], self.cache[layer_idx]['v']
+        return None
+    
+    def __len__(self) -> int:
+        """Return current cached sequence length."""
+        return self.seq_len
 
 
 class Linear:
@@ -312,7 +378,10 @@ class MultiHeadAttention:
         key: Tensor,
         value:  Tensor,
         mask: Optional[np.ndarray] = None,
-        training: bool = False
+        training: bool = False,
+        use_cache: bool = False,
+        kv_cache: Optional['KVCache'] = None,
+        layer_idx: int = 0
     ) -> Tensor:
         """
         Apply multi-head attention. 
@@ -323,6 +392,9 @@ class MultiHeadAttention:
             value: Value tensor, shape (batch_size, seq_len, embed_dim) or (seq_len, embed_dim)
             mask: Optional causal mask, shape (seq_len, seq_len)
             training: Whether in training mode
+            use_cache: Whether to use KV cache for generation
+            kv_cache: KV cache object
+            layer_idx: Layer index for KV cache
         
         Returns:
             Output tensor of same shape as input
@@ -365,7 +437,16 @@ class MultiHeadAttention:
         K = self._split_heads(K, batch_size)
         V = self._split_heads(V, batch_size)
         
-        # Step 3: Expand mask for heads if needed
+        # Step 3: Use KV cache if enabled (for generation)
+        if use_cache and kv_cache is not None and not training:
+            # Update cache with current K, V (already split into heads)
+            K_cached, V_cached = kv_cache.update(layer_idx, K.data, V.data)
+            # K_cached and V_cached are already in (batch, heads, seq, head_dim) format
+            K = Tensor(K_cached, requires_grad=False)
+            V = Tensor(V_cached, requires_grad=False)
+            # Note: Do NOT call _split_heads again - data is already in correct format
+        
+        # Step 4: Expand mask for heads if needed
         if mask is not None: 
             # Expand mask:  (seq_len, seq_len) -> (1, 1, seq_len, seq_len)
             mask = mask[np.newaxis, np.newaxis, :, :]
@@ -467,7 +548,10 @@ class CausalSelfAttention:
     def __call__(
         self,
         x: Tensor,
-        training: bool = False
+        training: bool = False,
+        use_cache: bool = False,
+        kv_cache: Optional['KVCache'] = None,
+        layer_idx: int = 0
     ) -> Tensor:
         """
         Apply causal self-attention.
@@ -475,6 +559,9 @@ class CausalSelfAttention:
         Args: 
             x: Input tensor, shape (batch_size, seq_len, embed_dim) or (seq_len, embed_dim)
             training: Whether in training mode
+            use_cache: Whether to use KV cache
+            kv_cache: KV cache object for efficient generation
+            layer_idx: Layer index for KV cache
         
         Returns:
             Output tensor of same shape as input
@@ -486,10 +573,31 @@ class CausalSelfAttention:
             seq_len = x.shape[1]
         
         # Get causal mask for this sequence length
-        mask = self.causal_mask[:seq_len, :seq_len]
+        # When using cache, we need to check if THIS layer has cached data
+        # Each layer maintains its own K,V cache
+        layer_has_cache = (use_cache and kv_cache is not None and 
+                          kv_cache.get(layer_idx) is not None)
+        
+        if layer_has_cache:
+            # For cached generation, the query is only the new token(s)
+            # but K, V will include all cached tokens after update
+            cached_kv = kv_cache.get(layer_idx)
+            cached_len = cached_kv[0].shape[2]  # K shape is (batch, heads, seq, dim)
+            total_len = cached_len + seq_len
+            # Create a rectangular mask: shape (seq_len, total_len)
+            # Each new query at position i (relative to new tokens) is at absolute position cached_len + i
+            # It can attend to all positions 0 through cached_len + i (inclusive)
+            # So for token i, positions > cached_len + i should be masked
+            mask = np.zeros((seq_len, total_len), dtype=np.float32)
+            for i in range(seq_len):
+                # Mask future positions for causal attention
+                mask[i, cached_len + i + 1:] = -1e9
+        else:
+            mask = self.causal_mask[:seq_len, :seq_len]
         
         # Apply multi-head attention with self-attention (Q=K=V=x)
-        return self.mha(x, x, x, mask=mask, training=training)
+        return self.mha(x, x, x, mask=mask, training=training,
+                       use_cache=use_cache, kv_cache=kv_cache, layer_idx=layer_idx)
     
     def parameters(self) -> List[Tensor]:
         """Return all learnable parameters."""

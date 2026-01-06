@@ -13,7 +13,7 @@ import pickle
 
 from tensor import Tensor
 from embeddings import Embedding, PositionalEncoding, LayerNorm
-from attention import Linear, CausalSelfAttention
+from attention import Linear, CausalSelfAttention, KVCache
 from feedforward import FeedForward
 from transformer_block import TransformerBlock, TransformerStack
 
@@ -29,17 +29,18 @@ class TinyGreetConfig:
     def __init__(
         self,
         vocab_size: int = 500,
-        embed_dim: int = 64,
-        num_heads:  int = 4,
-        num_layers: int = 2,
-        ff_hidden_dim: int = None,  # Default:  4 * embed_dim
-        max_seq_len: int = 128,
+        embed_dim: int = 128,       # Scaled up from 64
+        num_heads:  int = 8,        # Scaled up from 4
+        num_layers: int = 6,        # Scaled up from 2
+        ff_hidden_dim: int = None,  # Default: 4 * embed_dim
+        max_seq_len: int = 256,     # Scaled up from 128
         dropout_rate: float = 0.1,
         activation: str = 'gelu',
         pad_token_id:  int = 0,
         bos_token_id: int = 2,
         eos_token_id:  int = 3,
         sep_token_id:  int = 4,
+        use_gradient_checkpointing: bool = False,
     ):
         self.vocab_size = vocab_size
         self.embed_dim = embed_dim
@@ -53,6 +54,7 @@ class TinyGreetConfig:
         self.bos_token_id = bos_token_id
         self.eos_token_id = eos_token_id
         self.sep_token_id = sep_token_id
+        self.use_gradient_checkpointing = use_gradient_checkpointing
     
     def to_dict(self) -> Dict:
         """Convert config to dictionary."""
@@ -69,6 +71,7 @@ class TinyGreetConfig:
             'bos_token_id': self.bos_token_id,
             'eos_token_id': self.eos_token_id,
             'sep_token_id': self.sep_token_id,
+            'use_gradient_checkpointing': self.use_gradient_checkpointing,
         }
     
     @classmethod
@@ -137,7 +140,8 @@ class TinyGreetModel:
             ff_hidden_dim=config.ff_hidden_dim,
             max_seq_len=config.max_seq_len,
             dropout_rate=config.dropout_rate,
-            activation=config.activation
+            activation=config.activation,
+            use_gradient_checkpointing=config.use_gradient_checkpointing
         )
         
         # Final Layer Normalization
@@ -159,11 +163,21 @@ class TinyGreetModel:
         
         # Store whether we're in training mode
         self.training = False
+        
+        # KV cache for efficient generation
+        self._kv_cache: Optional[KVCache] = None
+    
+    def create_kv_cache(self) -> KVCache:
+        """Create a new KV cache for generation."""
+        return KVCache(self.config.num_layers, self.config.max_seq_len)
     
     def forward(
         self,
         input_ids: np.ndarray,
-        training: bool = False
+        training: bool = False,
+        use_cache: bool = False,
+        kv_cache: Optional[KVCache] = None,
+        position_offset: int = 0
     ) -> Tensor:
         """
         Forward pass through the model.
@@ -171,6 +185,9 @@ class TinyGreetModel:
         Args: 
             input_ids:  Token IDs, shape (batch_size, seq_len) or (seq_len,)
             training: Whether in training mode (affects dropout)
+            use_cache: Whether to use KV cache for efficient generation
+            kv_cache: KV cache object
+            position_offset: Position offset for positional encoding (for cached generation)
         
         Returns: 
             Logits tensor, shape (batch_size, seq_len, vocab_size) or (seq_len, vocab_size)
@@ -204,11 +221,11 @@ class TinyGreetModel:
                 x_unscaled.grad += x.grad * embed_scale
         x._backward = _backward_scale
         
-        # Step 3: Add Positional Encoding
-        x = self.positional_encoding(x)
+        # Step 3: Add Positional Encoding (with optional offset for cached generation)
+        x = self.positional_encoding(x, position_offset=position_offset)
         
-        # Step 4: Pass through Transformer Stack
-        x = self.transformer(x, training=training)
+        # Step 4: Pass through Transformer Stack (with optional KV cache)
+        x = self.transformer(x, training=training, use_cache=use_cache, kv_cache=kv_cache)
         
         # Step 5: Final Layer Normalization
         x = self.final_ln(x)
@@ -240,9 +257,22 @@ class TinyGreetModel:
         
         return logits
     
-    def __call__(self, input_ids: np.ndarray, training: bool = False) -> Tensor:
+    def __call__(
+        self, 
+        input_ids: np.ndarray, 
+        training: bool = False,
+        use_cache: bool = False,
+        kv_cache: Optional[KVCache] = None,
+        position_offset: int = 0
+    ) -> Tensor:
         """Make the model callable."""
-        return self.forward(input_ids, training=training)
+        return self.forward(
+            input_ids, 
+            training=training, 
+            use_cache=use_cache, 
+            kv_cache=kv_cache,
+            position_offset=position_offset
+        )
     
     def parameters(self) -> List[Tensor]: 
         """Return all learnable parameters."""

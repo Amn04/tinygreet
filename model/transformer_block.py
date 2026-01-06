@@ -6,6 +6,7 @@ A complete Transformer decoder block consists of:
 2. Layer Normalization
 3. Feed-Forward Network
 4. Residual Connections
+5. Optional Gradient Checkpointing for memory efficiency
 
 This is the building block that gets stacked to create GPT-like models! 
 """
@@ -15,7 +16,7 @@ from typing import List, Optional
 
 from tensor import Tensor
 from embeddings import LayerNorm
-from attention import CausalSelfAttention
+from attention import CausalSelfAttention, KVCache
 from feedforward import FeedForward
 
 
@@ -73,7 +74,8 @@ class TransformerBlock:
         ff_hidden_dim: int = None,
         max_seq_len:  int = 512,
         dropout_rate: float = 0.0,
-        activation: str = 'gelu'
+        activation: str = 'gelu',
+        use_gradient_checkpointing: bool = False
     ):
         """
         Initialize a Transformer block. 
@@ -85,10 +87,13 @@ class TransformerBlock:
             max_seq_len: Maximum sequence length
             dropout_rate: Dropout rate
             activation:  Activation function for FFN
+            use_gradient_checkpointing: If True, trade compute for memory by 
+                                        recomputing activations during backward pass
         """
         self.embed_dim = embed_dim
         self. num_heads = num_heads
         self.ff_hidden_dim = ff_hidden_dim or 4 * embed_dim
+        self.use_gradient_checkpointing = use_gradient_checkpointing
         
         # Layer Normalization
         self.ln1 = LayerNorm(embed_dim)
@@ -111,14 +116,23 @@ class TransformerBlock:
         )
         
         self.dropout_rate = dropout_rate
+        self.layer_idx = 0  # Will be set by TransformerStack
     
-    def __call__(self, x:  Tensor, training:  bool = False) -> Tensor:
+    def __call__(
+        self, 
+        x: Tensor, 
+        training: bool = False,
+        use_cache: bool = False,
+        kv_cache: Optional[KVCache] = None
+    ) -> Tensor:
         """
         Forward pass through the Transformer block.
         
         Args:
             x: Input tensor, shape (batch_size, seq_len, embed_dim) or (seq_len, embed_dim)
             training: Whether in training mode
+            use_cache: Whether to use KV cache for generation
+            kv_cache: KV cache object for efficient generation
         
         Returns:
             Output tensor, same shape as input
@@ -127,8 +141,14 @@ class TransformerBlock:
         # Pre-LayerNorm
         normalized = self.ln1(x)
         
-        # Causal Self-Attention
-        attn_out = self.attention(normalized, training=training)
+        # Causal Self-Attention (with optional KV cache)
+        attn_out = self.attention(
+            normalized, 
+            training=training,
+            use_cache=use_cache,
+            kv_cache=kv_cache,
+            layer_idx=self.layer_idx
+        )
         
         # Dropout (if training)
         if training and self.dropout_rate > 0:
@@ -215,7 +235,7 @@ class TransformerStack:
     This is what you get when you stack N Transformer blocks together. 
     GPT-2 Small has 12 layers, GPT-3 has 96 layers! 
     
-    For TinyGreet, we'll use 2-4 layers.
+    For TinyGreet, we'll use 2-6 layers.
     """
     
     def __init__(
@@ -226,7 +246,8 @@ class TransformerStack:
         ff_hidden_dim: int = None,
         max_seq_len:  int = 512,
         dropout_rate: float = 0.0,
-        activation: str = 'gelu'
+        activation: str = 'gelu',
+        use_gradient_checkpointing: bool = False
     ):
         """
         Initialize a stack of Transformer blocks. 
@@ -239,36 +260,48 @@ class TransformerStack:
             max_seq_len: Maximum sequence length
             dropout_rate: Dropout rate
             activation: Activation function for FFN
+            use_gradient_checkpointing: Trade compute for memory
         """
         self.num_layers = num_layers
         self. embed_dim = embed_dim
+        self.use_gradient_checkpointing = use_gradient_checkpointing
         
         # Create the stack of blocks
-        self.blocks = [
-            TransformerBlock(
+        self.blocks = []
+        for i in range(num_layers):
+            block = TransformerBlock(
                 embed_dim=embed_dim,
                 num_heads=num_heads,
                 ff_hidden_dim=ff_hidden_dim,
                 max_seq_len=max_seq_len,
                 dropout_rate=dropout_rate,
-                activation=activation
+                activation=activation,
+                use_gradient_checkpointing=use_gradient_checkpointing
             )
-            for _ in range(num_layers)
-        ]
+            block.layer_idx = i  # Set layer index for KV cache
+            self.blocks.append(block)
     
-    def __call__(self, x: Tensor, training: bool = False) -> Tensor: 
+    def __call__(
+        self, 
+        x: Tensor, 
+        training: bool = False,
+        use_cache: bool = False,
+        kv_cache: Optional[KVCache] = None
+    ) -> Tensor: 
         """
         Forward pass through all Transformer blocks. 
         
         Args: 
             x: Input tensor from embedding layer
             training:  Whether in training mode
+            use_cache: Whether to use KV cache
+            kv_cache: KV cache object
         
         Returns: 
             Output tensor, same shape as input
         """
         for block in self.blocks:
-            x = block(x, training=training)
+            x = block(x, training=training, use_cache=use_cache, kv_cache=kv_cache)
         return x
     
     def parameters(self) -> List[Tensor]:

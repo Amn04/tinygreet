@@ -133,10 +133,10 @@ def build_dataset():
     print("\n💾 Step 6: Saving datasets...")
     os.makedirs("final", exist_ok=True)
     
-    save_json(train, "final/train. json")
-    save_json(val, "final/val. json")
-    save_json(test, "final/test. json")
-    save_json(all_data, "final/all_data. json")
+    save_json(train, "final/train.json")
+    save_json(val, "final/val.json")
+    save_json(test, "final/test.json")
+    save_json(all_data, "final/all_data.json")
     
     # Also save a simple format for tokenizer training
     all_texts = []
@@ -190,7 +190,7 @@ def build_dataset():
     print("=" * 70)
     print("\nFiles created:")
     print("   📄 final/train.json")
-    print("   📄 final/val. json")
+    print("   📄 final/val.json")
     print("   📄 final/test.json")
     print("   📄 final/all_data.json")
     print("   📄 final/corpus.txt (for tokenizer training)")

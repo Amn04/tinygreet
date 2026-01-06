@@ -7,6 +7,13 @@ This script:
 3. Creates the model
 4. Trains the model
 5. Generates sample outputs
+
+Enhanced with:
+- Scaled up model architecture
+- More training epochs
+- Beam search and repetition penalty in generation
+- Conversation context support
+- KV-Cache for faster generation
 """
 
 import os
@@ -47,20 +54,21 @@ def main():
     VAL_DATA = os.path.join(DATA_DIR, 'val.json')
     CHECKPOINT_DIR = os.path.join(BASE_DIR, 'checkpoints')
     
-    # Model hyperparameters
+    # Model hyperparameters - SCALED UP for better capacity
     VOCAB_SIZE = 500
-    EMBED_DIM = 64
-    NUM_HEADS = 4
-    NUM_LAYERS = 2
-    FF_HIDDEN_DIM = 256
-    MAX_SEQ_LEN = 128
+    EMBED_DIM = 128          # Increased from 64 - More expressive embeddings
+    NUM_HEADS = 8            # Increased from 4 - More attention patterns
+    NUM_LAYERS = 6           # Increased from 2 - Deeper model
+    FF_HIDDEN_DIM = 512      # Increased from 256 - Larger feed-forward
+    MAX_SEQ_LEN = 256        # Increased from 128 - Longer contexts
     DROPOUT_RATE = 0.1
+    USE_GRADIENT_CHECKPOINTING = False  # Set to True for very large models
     
-    # Training hyperparameters
+    # Training hyperparameters - ADJUSTED for more training
     BATCH_SIZE = 8
-    LEARNING_RATE = 1e-3
-    NUM_EPOCHS = 50
-    WARMUP_STEPS = 50
+    LEARNING_RATE = 5e-4     # Slightly reduced for larger model
+    NUM_EPOCHS = 30          # Reduced for faster testing
+    WARMUP_STEPS = 100       # Increased warmup for larger model
     WEIGHT_DECAY = 0.01
     MAX_GRAD_NORM = 1.0
     
@@ -121,6 +129,7 @@ def main():
         bos_token_id=tokenizer.vocab.get('<BOS>', 2),
         eos_token_id=tokenizer.vocab.get('<EOS>', 3),
         sep_token_id=tokenizer.vocab.get('<SEP>', 4),
+        use_gradient_checkpointing=USE_GRADIENT_CHECKPOINTING,
     )
     
     model = TinyGreetModel(config)
@@ -156,7 +165,7 @@ def main():
     print("TESTING GENERATION")
     print("=" * 70)
     
-    generator = TextGenerator(model, tokenizer)
+    generator = TextGenerator(model, tokenizer, use_kv_cache=True)
     
     test_prompts = [
         "Hello! ",
@@ -166,35 +175,54 @@ def main():
         "Thank you!",
     ]
     
-    print("\n--- Greedy Decoding ---")
+    print("\n--- Greedy Decoding (with repetition penalty) ---")
     for prompt in test_prompts:
-        response = generator.generate_greedy(prompt)
+        response = generator.generate_greedy(prompt, repetition_penalty=1.2)
         print(f"User: {prompt}")
         print(f"Bot:   {response}\n")
     
-    print("\n--- With Sampling (temp=0.7, top_p=0.9) ---")
+    print("\n--- With Sampling (temp=0.7, top_p=0.9, repetition_penalty=1.2) ---")
     for prompt in test_prompts[: 3]:
         responses = generator.generate(
             prompt,
             temperature=0.7,
             top_p=0.9,
-            num_return_sequences=3
+            num_return_sequences=3,
+            repetition_penalty=1.2
         )
         print(f"User:  {prompt}")
         for i, response in enumerate(responses):
             print(f"  Response {i+1}:  {response}")
         print()
     
+    print("\n--- Beam Search (beam_width=4) ---")
+    for prompt in test_prompts[:3]:
+        responses = generator.generate_beam_search(
+            prompt,
+            beam_width=4,
+            num_return_sequences=2,
+            repetition_penalty=1.2
+        )
+        print(f"User: {prompt}")
+        for i, response in enumerate(responses):
+            print(f"  Beam {i+1}: {response}")
+        print()
+    
     # ==================== INTERACTIVE CHAT ====================
     
     print("\n" + "=" * 70)
     print("Would you like to chat with TinyGreet?")
+    print("(Now with conversation context - the bot remembers previous turns!)")
     print("=" * 70)
     
     try:
         answer = input("\nStart interactive chat? (y/n): ").strip().lower()
         if answer == 'y':
-            interactive_chat(generator)
+            print("\nTip: The bot now remembers your conversation!")
+            print("Type 'clear' to reset conversation history.")
+            print("Type 'beam' to use beam search for higher quality responses.")
+            print("-" * 60)
+            interactive_chat_enhanced(generator)
     except (EOFError, KeyboardInterrupt):
         pass
     
@@ -202,9 +230,104 @@ def main():
     print("TRAINING COMPLETE!")
     print("=" * 70)
     print(f"\nModel saved to: {CHECKPOINT_DIR}/final_model/")
+    print("\nEnhancements in this version:")
+    print("  - Scaled up model (128 embed_dim, 8 heads, 6 layers)")
+    print("  - KV-Cache for faster generation")
+    print("  - Beam search for better quality outputs")
+    print("  - Repetition penalty to reduce repetitive text")
+    print("  - Conversation context for multi-turn dialogue")
+    print("  - Gradient checkpointing support for large models")
     print("\nTo use the trained model later:")
     print("  from model.tinygreet_model import TinyGreetModel")
     print("  model = TinyGreetModel.load('checkpoints/final_model')")
+
+
+def interactive_chat_enhanced(generator):
+    """Enhanced interactive chat with conversation context."""
+    print("\n" + "=" * 60)
+    print("TINYGREET INTERACTIVE CHAT (Enhanced)")
+    print("=" * 60)
+    print("\nType your greeting and I'll respond!")
+    print("Commands:")
+    print("  'quit' - Exit chat")
+    print("  'clear' - Clear conversation history")
+    print("  'beam' - Toggle beam search mode")
+    print("  'settings' - Change generation settings")
+    print("-" * 60)
+    
+    temperature = 0.7
+    top_p = 0.9
+    use_beam = False
+    use_context = True
+    
+    while True:
+        try:
+            user_input = input("\nYou: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            break
+        
+        if not user_input:
+            continue
+        
+        if user_input.lower() == 'quit':
+            print("\nGoodbye! 👋")
+            break
+        
+        if user_input.lower() == 'clear':
+            generator.clear_conversation_history()
+            print("Conversation history cleared!")
+            continue
+        
+        if user_input.lower() == 'beam':
+            use_beam = not use_beam
+            print(f"Beam search: {'ON' if use_beam else 'OFF'}")
+            continue
+        
+        if user_input.lower() == 'settings':
+            print(f"\nCurrent settings:")
+            print(f"  Temperature: {temperature}")
+            print(f"  Top-p: {top_p}")
+            print(f"  Beam search: {'ON' if use_beam else 'OFF'}")
+            print(f"  Use context: {'ON' if use_context else 'OFF'}")
+            try:
+                temp_input = input("New temperature (0.1-2.0, or Enter to keep): ").strip()
+                if temp_input:
+                    temperature = float(temp_input)
+                
+                top_p_input = input("New top_p (0.1-1.0, or Enter to keep): ").strip()
+                if top_p_input:
+                    top_p = float(top_p_input)
+                
+                context_input = input("Use context? (y/n, or Enter to keep): ").strip().lower()
+                if context_input == 'y':
+                    use_context = True
+                elif context_input == 'n':
+                    use_context = False
+                
+                print(f"Settings updated!")
+            except ValueError:
+                print("Invalid input, keeping current settings.")
+            continue
+        
+        # Generate response
+        if use_beam:
+            responses = generator.generate_beam_search(
+                prompt=user_input,
+                beam_width=4,
+                num_return_sequences=1,
+                repetition_penalty=1.2,
+                use_context=use_context
+            )
+            response = responses[0] if responses else "..."
+        else:
+            response = generator.chat(
+                prompt=user_input,
+                temperature=temperature,
+                top_p=top_p,
+                use_context=use_context
+            )
+        
+        print(f"Bot: {response}")
 
 
 if __name__ == "__main__": 

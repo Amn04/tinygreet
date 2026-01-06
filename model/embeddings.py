@@ -201,13 +201,14 @@ class PositionalEncoding:
         
         return pe.astype(np.float32)
     
-    def __call__(self, x:  Tensor) -> Tensor:
+    def __call__(self, x:  Tensor, position_offset: int = 0) -> Tensor:
         """
         Add positional encoding to input embeddings.
         
         Args: 
             x: Input tensor of shape (batch_size, seq_len, embed_dim)
                or (seq_len, embed_dim) for single sequence
+            position_offset: Starting position for encoding (useful for cached generation)
         
         Returns:
             Tensor with positional encoding added, same shape as input
@@ -218,13 +219,14 @@ class PositionalEncoding:
         else:
             seq_len = x.data.shape[1]
         
-        if seq_len > self.max_seq_len:
+        if position_offset + seq_len > self.max_seq_len:
             raise ValueError(
-                f"Sequence length {seq_len} exceeds maximum {self.max_seq_len}"
+                f"Position offset {position_offset} + sequence length {seq_len} "
+                f"exceeds maximum {self.max_seq_len}"
             )
         
-        # Get positional encoding for this sequence length
-        pe = self.pe[:seq_len]  # (seq_len, embed_dim)
+        # Get positional encoding for this sequence length, with offset
+        pe = self.pe[position_offset:position_offset + seq_len]  # (seq_len, embed_dim)
         
         # Add positional encoding to input
         # The PE is added (not concatenated) to the embeddings

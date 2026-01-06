@@ -780,6 +780,206 @@ class GreetingDataGenerator:
         
         return samples
     
+    def generate_multi_turn_conversations(self) -> List[Dict]:
+        """Generate multi-turn conversation examples."""
+        samples = []
+        
+        # Multi-turn greeting sequences
+        conversations = [
+            # Follow-up questions after greeting
+            ("How are you?", "I'm doing great, thanks! Just finished a big project."),
+            ("That sounds exciting! What kind of project?", "It was a coding project. Really challenging but rewarding!"),
+            ("Nice! Congrats on finishing it!", "Thanks! I appreciate it. How about you, what's new?"),
+            
+            # Extended small talk
+            ("Hey, what's up?", "Not much, just working from home. You?"),
+            ("Same here! Working remotely has its perks.", "Totally! No commute is the best part."),
+            ("Right? And pajamas all day!", "Haha exactly! Though I do miss the office sometimes."),
+            
+            # Planning related
+            ("Hey! Free this weekend?", "Hey! Yeah, I think so. What did you have in mind?"),
+            ("Want to grab coffee?", "Sure! Saturday works for me. What time?"),
+            ("How about 2pm at the usual spot?", "Perfect! See you then!"),
+            
+            # Checking in
+            ("Hey, just checking in. How are things?", "Hey! Things are good, thanks for asking. Been pretty busy."),
+            ("Busy is good! At least you're not bored.", "True that! Better busy than bored."),
+            ("Let me know if you need any help!", "Will do! Thanks for offering."),
+            
+            # Mood-aware responses
+            ("Hi... having a rough day.", "Oh no, I'm sorry to hear that. Want to talk about it?"),
+            ("It's just work stress, you know?", "I totally get it. Take a break when you can!"),
+            ("Thanks, I needed that.", "Anytime! Feel better soon. Here if you need me."),
+            
+            # Excited greetings
+            ("OMG guess what!!", "What?! Tell me!! I can sense the excitement!"),
+            ("I got the job!!!", "CONGRATULATIONS!! That's amazing news! So happy for you!"),
+            ("Thank you!! I'm still in shock!", "You deserve it! Let's celebrate!"),
+        ]
+        
+        for input_text, response in conversations:
+            sample = self._create_sample(
+                input_text, response,
+                category="conversation",
+                subcategory="multi_turn",
+                formality="casual"
+            )
+            samples.append(sample)
+        
+        return samples
+    
+    def generate_emotional_responses(self) -> List[Dict]:
+        """Generate responses with emotional intelligence."""
+        samples = []
+        
+        emotional_pairs = {
+            "happy": [
+                ("I'm so happy today!", "That's wonderful! Your happiness is contagious!"),
+                ("Best day ever!", "Amazing! What made it so great?"),
+                ("Feeling on top of the world!", "Love that energy! Keep riding that wave!"),
+                ("Everything is going right!", "That's fantastic! You deserve it!"),
+            ],
+            "sad": [
+                ("I'm feeling down today...", "I'm sorry to hear that. Sending you virtual hugs."),
+                ("Things haven't been great lately.", "That's tough. Remember, this too shall pass."),
+                ("I miss the old times.", "Nostalgia can be bittersweet. I'm here if you want to talk."),
+                ("Having a hard time...", "I understand. Take it one step at a time."),
+            ],
+            "excited": [
+                ("I can't wait!", "Your excitement is infectious! What's got you so hyped?"),
+                ("This is going to be amazing!", "I love your enthusiasm! Tell me more!"),
+                ("So pumped right now!", "That energy is great! Channel it well!"),
+            ],
+            "stressed": [
+                ("I'm so stressed out...", "Take a deep breath. What's causing the stress?"),
+                ("Too much on my plate.", "Prioritize what you can. Don't be too hard on yourself."),
+                ("I need a break.", "You deserve one! Even a short one can help."),
+            ],
+            "grateful": [
+                ("I'm so thankful for everything.", "Gratitude is beautiful. What are you most thankful for?"),
+                ("Feeling blessed today.", "That's a wonderful mindset to have!"),
+                ("Appreciate you!", "And I appreciate you too! Thanks for saying that."),
+            ],
+        }
+        
+        for mood, pairs in emotional_pairs.items():
+            for input_text, response in pairs:
+                sample = self._create_sample(
+                    input_text, response,
+                    category="emotional",
+                    subcategory=mood,
+                    formality="casual"
+                )
+                sample["mood"] = mood
+                samples.append(sample)
+        
+        return samples
+    
+    def generate_slang_variations(self) -> List[Dict]:
+        """Generate modern slang and internet-speak variations."""
+        samples = []
+        
+        slang_pairs = [
+            # Internet speak
+            ("bruh", "What's up!"),
+            ("lol hey", "Haha hey! What's so funny?"),
+            ("ayy", "Ayyy! What's good?"),
+            ("yooo", "Yooo! How's it going?"),
+            ("heyyyy", "Heyyyy! Someone's in a good mood!"),
+            ("hiiii", "Hiiii! How are you?"),
+            ("wassup", "Wassup! Just chilling, you?"),
+            ("sup fam", "Sup! Good to see you!"),
+            ("yo yo yo", "Yo yo yo! What's happening?"),
+            
+            # Emoji-adjacent
+            ("hey :)", "Hey! :) How are you?"),
+            ("hi!", "Hi! Great to hear from you!"),
+            ("hellooo", "Hellooo! What brings you here?"),
+            
+            # Gen-Z style
+            ("no cap, how are you?", "No cap, I'm doing great! You?"),
+            ("bet, see you later", "Bet! Catch you later!"),
+            ("lowkey tired today", "Same, lowkey need a nap."),
+            ("highkey excited!", "Highkey love that energy!"),
+            ("it's giving good vibes", "Love that! Good vibes only!"),
+            ("slay", "Slay indeed! You got this!"),
+            ("periodt", "Periodt! No debate there!"),
+            
+            # Abbreviations
+            ("gm", "GM! Good morning to you too!"),
+            ("gn", "GN! Sweet dreams!"),
+            ("ttyl", "TTYL! Talk soon!"),
+            ("brb", "No worries, BRB!"),
+            ("nvm hi", "Lol hi! What's up?"),
+            ("k bye", "Bye! Take care!"),
+            ("thx", "You're welcome!"),
+            ("ty", "No problem! Happy to help!"),
+            ("np", "Anytime! :)"),
+        ]
+        
+        for input_text, response in slang_pairs:
+            sample = self._create_sample(
+                input_text, response,
+                category="greeting",
+                subcategory="slang",
+                formality="casual"
+            )
+            samples.append(sample)
+        
+        return samples
+    
+    def generate_situational_greetings(self) -> List[Dict]:
+        """Generate greetings for specific situations."""
+        samples = []
+        
+        situations = [
+            # Virtual meetings
+            ("Hi everyone, can you hear me?", "Hi! Yes, we can hear you. Welcome!"),
+            ("Am I on mute?", "Nope, we can hear you clearly!"),
+            ("Sorry I'm late to the call!", "No worries! We just started."),
+            ("Let me share my screen.", "Go ahead! We're ready."),
+            
+            # Customer service
+            ("Hi, I need some help.", "Hi! I'd be happy to help. What can I do for you?"),
+            ("Hello, is anyone there?", "Hello! Yes, I'm here. How can I assist you?"),
+            ("I have a question.", "Of course! Feel free to ask anything."),
+            
+            # Social media style
+            ("Just dropping by to say hi!", "Hey! Thanks for stopping by! 👋"),
+            ("Checking in!", "Great to hear from you! How's everything?"),
+            ("Sending good vibes!", "Good vibes received! Sending them right back!"),
+            ("Thinking of you!", "Aww, that's so sweet! Thinking of you too!"),
+            
+            # Professional networking
+            ("Great to connect with you!", "Likewise! Looking forward to collaborating."),
+            ("Nice to e-meet you!", "Nice to e-meet you too! How can I help?"),
+            ("Thanks for accepting my request!", "Of course! Happy to connect."),
+            
+            # Returning user
+            ("I'm back!", "Welcome back! We missed you!"),
+            ("Miss me?", "Of course! Good to see you again!"),
+            ("Guess who's back?", "The legend returns! How have you been?"),
+            
+            # Holiday greetings
+            ("Happy holidays!", "Happy holidays to you too! Enjoy the season!"),
+            ("Happy New Year!", "Happy New Year! Here's to a great year ahead!"),
+            ("Merry Christmas!", "Merry Christmas! Hope you have a wonderful day!"),
+            ("Happy birthday!", "Thank you so much! That's very kind of you!"),
+            ("Congratulations!", "Thank you! I really appreciate it!"),
+        ]
+        
+        for input_text, response in situations:
+            formality = "formal" if "professional" in input_text.lower() else "casual"
+            sample = self._create_sample(
+                input_text, response,
+                category="greeting",
+                subcategory="situational",
+                formality=formality
+            )
+            samples.append(sample)
+        
+        return samples
+    
     def generate_all(self) -> List[Dict]:
         """Generate all data."""
         all_samples = []
@@ -807,6 +1007,18 @@ class GreetingDataGenerator:
         
         print("Generating contextual greetings...")
         all_samples.extend(self.generate_contextual_greetings())
+        
+        print("Generating multi-turn conversations...")
+        all_samples.extend(self.generate_multi_turn_conversations())
+        
+        print("Generating emotional responses...")
+        all_samples.extend(self.generate_emotional_responses())
+        
+        print("Generating slang variations...")
+        all_samples.extend(self.generate_slang_variations())
+        
+        print("Generating situational greetings...")
+        all_samples.extend(self.generate_situational_greetings())
         
         # Add unique IDs
         for i, sample in enumerate(all_samples):

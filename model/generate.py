@@ -6,13 +6,79 @@ Implements various decoding strategies:
 2. Temperature Sampling - Add randomness based on temperature
 3. Top-k Sampling - Sample from top k tokens
 4. Top-p (Nucleus) Sampling - Sample from smallest set with cumulative prob >= p
+5. Beam Search - Explore multiple hypotheses for better quality
+6. Repetition Penalty - Reduce repetitive outputs
+7. KV-Cache - Efficient autoregressive generation
+8. Conversation Context - Multi-turn dialogue support
 """
 
 import numpy as np
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Dict
 
 from tensor import Tensor
 from tinygreet_model import TinyGreetModel
+from attention import KVCache
+
+
+class ConversationHistory:
+    """
+    Manages conversation history for multi-turn dialogue.
+    Keeps track of previous turns to provide context.
+    """
+    
+    def __init__(self, max_turns: int = 5, max_tokens: int = 512):
+        """
+        Initialize conversation history.
+        
+        Args:
+            max_turns: Maximum number of turns to remember
+            max_tokens: Maximum total tokens in history
+        """
+        self.max_turns = max_turns
+        self.max_tokens = max_tokens
+        self.history: List[Dict[str, str]] = []
+    
+    def add_turn(self, user_input: str, bot_response: str):
+        """Add a conversation turn."""
+        self.history.append({
+            'user': user_input,
+            'bot': bot_response
+        })
+        # Keep only the last max_turns
+        if len(self.history) > self.max_turns:
+            self.history = self.history[-self.max_turns:]
+    
+    def get_context(self, tokenizer, max_tokens: int = None) -> str:
+        """
+        Get formatted conversation context.
+        
+        Returns context string that can be prepended to current input.
+        """
+        max_tokens = max_tokens or self.max_tokens
+        
+        context_parts = []
+        for turn in self.history:
+            context_parts.append(f"User: {turn['user']}")
+            context_parts.append(f"Bot: {turn['bot']}")
+        
+        context = " ".join(context_parts)
+        
+        # Truncate if too long (simple truncation from the start)
+        # In production, you'd want smarter truncation
+        tokens = tokenizer.encode(context, add_special_tokens=False)
+        if len(tokens) > max_tokens:
+            # Keep the most recent context
+            tokens = tokens[-max_tokens:]
+            context = tokenizer.decode(tokens)
+        
+        return context
+    
+    def clear(self):
+        """Clear conversation history."""
+        self.history = []
+    
+    def __len__(self):
+        return len(self.history)
 
 
 class TextGenerator: 
@@ -20,13 +86,15 @@ class TextGenerator:
     Text generator for TinyGreet model. 
     
     Handles autoregressive generation with various sampling strategies.
+    Now with KV-cache support, repetition penalty, beam search, and conversation context.
     """
     
     def __init__(
         self,
         model: TinyGreetModel,
         tokenizer,
-        max_length: int = 50
+        max_length: int = 50,
+        use_kv_cache: bool = True
     ):
         """
         Initialize generator.
@@ -35,29 +103,85 @@ class TextGenerator:
             model:  Trained TinyGreet model
             tokenizer: BPE tokenizer
             max_length:  Maximum generation length
+            use_kv_cache: Whether to use KV caching for faster generation
         """
         self.model = model
         self. tokenizer = tokenizer
         self.max_length = max_length
+        self.use_kv_cache = use_kv_cache
         
         # Special token IDs
         self. bos_id = model.config.bos_token_id
         self.eos_id = model. config.eos_token_id
         self.sep_id = model. config.sep_token_id
         self.pad_id = model. config.pad_token_id
+        
+        # Conversation history for multi-turn support
+        self.conversation_history = ConversationHistory()
     
-    def _get_logits(self, token_ids: np.ndarray) -> np.ndarray:
+    def _apply_repetition_penalty(
+        self, 
+        logits: np.ndarray, 
+        token_ids: List[int],
+        penalty: float = 1.2
+    ) -> np.ndarray:
+        """
+        Apply repetition penalty to logits.
+        
+        Tokens that have already appeared get their logits divided by penalty.
+        This discourages the model from repeating the same tokens.
+        
+        Args:
+            logits: Raw logits from model, shape (vocab_size,)
+            token_ids: List of previously generated token IDs
+            penalty: Penalty factor (1.0 = no penalty, higher = more penalty)
+        
+        Returns:
+            Modified logits
+        """
+        if penalty == 1.0:
+            return logits
+        
+        # Get unique tokens that have appeared
+        seen_tokens = set(token_ids)
+        
+        for token_id in seen_tokens:
+            if token_id < len(logits):
+                # Divide positive logits by penalty, multiply negative by penalty
+                if logits[token_id] > 0:
+                    logits[token_id] = logits[token_id] / penalty
+                else:
+                    logits[token_id] = logits[token_id] * penalty
+        
+        return logits
+    
+    def _get_logits(
+        self, 
+        token_ids: np.ndarray,
+        kv_cache: Optional[KVCache] = None,
+        position_offset: int = 0
+    ) -> np.ndarray:
         """
         Get logits for next token prediction.
         
         Args: 
             token_ids:  Current sequence of token IDs
+            kv_cache: Optional KV cache for efficient generation
+            position_offset: Position offset for cached generation
         
         Returns: 
             Logits for next token, shape (vocab_size,)
         """
+        use_cache = kv_cache is not None and self.use_kv_cache
+        
         # Forward pass through model
-        logits = self.model(token_ids, training=False)
+        logits = self.model(
+            token_ids, 
+            training=False,
+            use_cache=use_cache,
+            kv_cache=kv_cache,
+            position_offset=position_offset
+        )
         
         # Get logits for last position
         if logits.data.ndim == 2:
@@ -126,7 +250,9 @@ class TextGenerator:
     def generate_greedy(
         self,
         prompt: str,
-        max_new_tokens: int = None
+        max_new_tokens: int = None,
+        repetition_penalty: float = 1.0,
+        use_context: bool = False
     ) -> str:
         """
         Generate text using greedy decoding. 
@@ -137,22 +263,38 @@ class TextGenerator:
         Args:
             prompt: Input prompt text
             max_new_tokens: Maximum tokens to generate
+            repetition_penalty: Penalty for repeated tokens (1.0 = no penalty)
+            use_context: Whether to use conversation history
         
         Returns:
             Generated text (response only)
         """
         max_new_tokens = max_new_tokens or self.max_length
         
+        # Prepare prompt with optional conversation context
+        if use_context and len(self.conversation_history) > 0:
+            context = self.conversation_history.get_context(self.tokenizer, max_tokens=100)
+            full_prompt = f"{context} User: {prompt}"
+        else:
+            full_prompt = prompt
+        
         # Encode prompt
-        prompt_ids = self. tokenizer.encode(prompt, add_special_tokens=False)
+        prompt_ids = self.tokenizer.encode(full_prompt, add_special_tokens=False)
         
         # Start with BOS + prompt + SEP
-        token_ids = [self.bos_id] + prompt_ids + [self. sep_id]
+        token_ids = [self.bos_id] + prompt_ids + [self.sep_id]
+        
+        # Initialize KV cache if enabled
+        kv_cache = self.model.create_kv_cache() if self.use_kv_cache else None
+        
+        # Process the prompt first to fill the cache and get initial logits
+        logits = self._get_logits(np.array(token_ids), kv_cache=kv_cache)
         
         # Generate tokens
-        for _ in range(max_new_tokens):
-            # Get logits for next token
-            logits = self._get_logits(np.array(token_ids))
+        for step in range(max_new_tokens):
+            # Apply repetition penalty
+            if repetition_penalty != 1.0:
+                logits = self._apply_repetition_penalty(logits, token_ids, repetition_penalty)
             
             # Pick highest probability token
             next_token = int(np.argmax(logits))
@@ -162,6 +304,18 @@ class TextGenerator:
                 break
             
             token_ids.append(next_token)
+            
+            # Get logits for next iteration
+            if kv_cache is not None:
+                # Only process the last token (use cached K,V)
+                logits = self._get_logits(
+                    np.array([next_token]), 
+                    kv_cache=kv_cache,
+                    position_offset=len(token_ids) - 1
+                )
+            else:
+                # No cache - reprocess everything
+                logits = self._get_logits(np.array(token_ids), kv_cache=None)
         
         # Decode response (everything after SEP)
         if self.sep_id in token_ids: 
@@ -174,7 +328,13 @@ class TextGenerator:
         response_ids = [t for t in response_ids if t not in 
                        [self.bos_id, self.eos_id, self. sep_id, self.pad_id]]
         
-        return self.tokenizer. decode(response_ids)
+        response = self.tokenizer.decode(response_ids)
+        
+        # Update conversation history if using context
+        if use_context:
+            self.conversation_history.add_turn(prompt, response)
+        
+        return response
     
     def generate(
         self,
@@ -183,7 +343,9 @@ class TextGenerator:
         temperature: float = 1.0,
         top_k: int = 0,
         top_p:  float = 1.0,
-        num_return_sequences: int = 1
+        num_return_sequences: int = 1,
+        repetition_penalty: float = 1.2,
+        use_context: bool = False
     ) -> List[str]:
         """
         Generate text with sampling.
@@ -195,25 +357,41 @@ class TextGenerator:
             top_k: Top-k sampling parameter (0 = disabled)
             top_p:  Nucleus sampling parameter (1. 0 = disabled)
             num_return_sequences: Number of sequences to generate
+            repetition_penalty: Penalty for repeated tokens (1.0 = no penalty)
+            use_context: Whether to use conversation history
         
         Returns: 
             List of generated texts
         """
         max_new_tokens = max_new_tokens or self.max_length
         
+        # Prepare prompt with optional conversation context
+        if use_context and len(self.conversation_history) > 0:
+            context = self.conversation_history.get_context(self.tokenizer, max_tokens=100)
+            full_prompt = f"{context} User: {prompt}"
+        else:
+            full_prompt = prompt
+        
         # Encode prompt
-        prompt_ids = self.tokenizer.encode(prompt, add_special_tokens=False)
+        prompt_ids = self.tokenizer.encode(full_prompt, add_special_tokens=False)
         
         results = []
         
         for _ in range(num_return_sequences):
             # Start with BOS + prompt + SEP
-            token_ids = [self.bos_id] + prompt_ids + [self. sep_id]
+            token_ids = [self.bos_id] + prompt_ids + [self.sep_id]
+            
+            # Initialize KV cache for this sequence
+            kv_cache = self.model.create_kv_cache() if self.use_kv_cache else None
+            
+            # Process the prompt first to fill the cache and get initial logits
+            logits = self._get_logits(np.array(token_ids), kv_cache=kv_cache)
             
             # Generate tokens
-            for _ in range(max_new_tokens):
-                # Get logits for next token
-                logits = self._get_logits(np.array(token_ids))
+            for step in range(max_new_tokens):
+                # Apply repetition penalty
+                if repetition_penalty != 1.0:
+                    logits = self._apply_repetition_penalty(logits.copy(), token_ids, repetition_penalty)
                 
                 # Sample next token
                 next_token = self._sample_token(
@@ -228,6 +406,17 @@ class TextGenerator:
                     break
                 
                 token_ids.append(next_token)
+                
+                # Get logits for next iteration
+                if kv_cache is not None:
+                    # Only process the last token
+                    logits = self._get_logits(
+                        np.array([next_token]),
+                        kv_cache=kv_cache,
+                        position_offset=len(token_ids) - 1
+                    )
+                else:
+                    logits = self._get_logits(np.array(token_ids), kv_cache=None)
             
             # Decode response
             if self. sep_id in token_ids:
@@ -242,21 +431,27 @@ class TextGenerator:
             
             results. append(self.tokenizer.decode(response_ids))
         
+        # Update conversation history if using context (only add first response)
+        if use_context and results:
+            self.conversation_history.add_turn(prompt, results[0])
+        
         return results
     
     def chat(
         self,
         prompt: str,
         temperature: float = 0.7,
-        top_p: float = 0.9
+        top_p: float = 0.9,
+        use_context: bool = True
     ) -> str:
         """
-        Simple chat interface.
+        Simple chat interface with conversation context.
         
         Args: 
             prompt: User input
             temperature:  Sampling temperature
             top_p:  Nucleus sampling parameter
+            use_context: Whether to use conversation history
         
         Returns: 
             Model response
@@ -265,9 +460,140 @@ class TextGenerator:
             prompt=prompt,
             temperature=temperature,
             top_p=top_p,
-            num_return_sequences=1
+            num_return_sequences=1,
+            repetition_penalty=1.2,
+            use_context=use_context
         )
         return responses[0]
+    
+    def generate_beam_search(
+        self,
+        prompt: str,
+        max_new_tokens: int = None,
+        beam_width: int = 4,
+        length_penalty: float = 0.6,
+        repetition_penalty: float = 1.2,
+        num_return_sequences: int = 1,
+        use_context: bool = False
+    ) -> List[str]:
+        """
+        Generate text using beam search for higher quality outputs.
+        
+        Beam search maintains multiple hypotheses (beams) and expands them
+        in parallel, keeping the top-k best sequences at each step.
+        
+        Args:
+            prompt: Input prompt text
+            max_new_tokens: Maximum tokens to generate
+            beam_width: Number of beams to maintain
+            length_penalty: Penalty for shorter sequences (< 1.0 favors shorter)
+            repetition_penalty: Penalty for repeated tokens
+            num_return_sequences: Number of top sequences to return
+            use_context: Whether to use conversation history
+        
+        Returns:
+            List of top generated sequences
+        """
+        max_new_tokens = max_new_tokens or self.max_length
+        num_return_sequences = min(num_return_sequences, beam_width)
+        
+        # Prepare prompt with optional conversation context
+        if use_context and len(self.conversation_history) > 0:
+            context = self.conversation_history.get_context(self.tokenizer, max_tokens=100)
+            full_prompt = f"{context} User: {prompt}"
+        else:
+            full_prompt = prompt
+        
+        # Encode prompt
+        prompt_ids = self.tokenizer.encode(full_prompt, add_special_tokens=False)
+        
+        # Start with BOS + prompt + SEP
+        initial_ids = [self.bos_id] + prompt_ids + [self.sep_id]
+        
+        # Initialize beams: (score, token_ids, is_finished)
+        # Score is negative log probability (lower is better)
+        beams = [(0.0, initial_ids, False)]
+        
+        # Completed sequences
+        completed = []
+        
+        for step in range(max_new_tokens):
+            all_candidates = []
+            
+            for score, token_ids, is_finished in beams:
+                if is_finished:
+                    completed.append((score, token_ids))
+                    continue
+                
+                # Get logits for next token
+                logits = self._get_logits(np.array(token_ids))
+                
+                # Apply repetition penalty
+                if repetition_penalty != 1.0:
+                    logits = self._apply_repetition_penalty(logits.copy(), token_ids, repetition_penalty)
+                
+                # Convert to log probabilities
+                logits_max = np.max(logits)
+                log_probs = logits - logits_max - np.log(np.sum(np.exp(logits - logits_max)))
+                
+                # Get top-k candidates
+                top_k_indices = np.argsort(log_probs)[-beam_width * 2:][::-1]
+                
+                for token_id in top_k_indices:
+                    new_score = score - log_probs[token_id]  # Accumulate negative log prob
+                    new_token_ids = token_ids + [int(token_id)]
+                    is_finished = (token_id == self.eos_id)
+                    
+                    # Apply length penalty
+                    response_len = len(new_token_ids) - len(initial_ids)
+                    length_factor = ((5 + response_len) / 6) ** length_penalty
+                    adjusted_score = new_score / length_factor
+                    
+                    all_candidates.append((adjusted_score, new_score, new_token_ids, is_finished))
+            
+            # If no candidates, we're done
+            if not all_candidates:
+                break
+            
+            # Sort by adjusted score and keep top beam_width
+            all_candidates.sort(key=lambda x: x[0])
+            beams = [(c[1], c[2], c[3]) for c in all_candidates[:beam_width]]
+            
+            # Check if all beams are finished
+            if all(b[2] for b in beams):
+                completed.extend([(b[0], b[1]) for b in beams])
+                break
+        
+        # Add remaining beams to completed
+        completed.extend([(b[0], b[1]) for b in beams if not b[2]])
+        
+        # Sort by score and get top sequences
+        completed.sort(key=lambda x: x[0])
+        
+        results = []
+        for score, token_ids in completed[:num_return_sequences]:
+            # Decode response (everything after SEP)
+            if self.sep_id in token_ids:
+                sep_pos = token_ids.index(self.sep_id)
+                response_ids = token_ids[sep_pos + 1:]
+            else:
+                response_ids = token_ids
+            
+            # Filter out special tokens
+            response_ids = [t for t in response_ids if t not in 
+                           [self.bos_id, self.eos_id, self.sep_id, self.pad_id]]
+            
+            results.append(self.tokenizer.decode(response_ids))
+        
+        # Update conversation history if using context
+        if use_context and results:
+            self.conversation_history.add_turn(prompt, results[0])
+        
+        return results if results else [""]
+    
+    def clear_conversation_history(self):
+        """Clear the conversation history for a fresh start."""
+        self.conversation_history.clear()
 
 
 def demonstrate_generation_strategies():
